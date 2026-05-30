@@ -216,3 +216,12 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Frontend build dependencies/output
+apps/web/node_modules/
+apps/web/dist/
+
+# Local SQLite cache
+/data/sqlite/
+*.db
+*.db-journal
