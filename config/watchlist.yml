@@ -1,11 +1,20 @@
 tickers:
+  # Australian Equities
   - VAS.AX
-  - A200.AX
-  - MVW.AX
   - VHY.AX
+  - IOZ.AX
+  # Global Equities
   - VGS.AX
   - VGAD.AX
+  - IVV.AX
+  # Fixed Income
   - VAF.AX
-  - AAA.AX
+  - IAF.AX
+  - VACF.AX
+  # Defensive / Real Return
   - GROW.AX
+  - VDBA.AX
+  - DHHF.AX
+  # Property & Infrastructure
+  - VAP.AX
   - IFRA.AX

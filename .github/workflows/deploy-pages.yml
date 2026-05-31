@@ -34,7 +34,8 @@ jobs:
       - name: Ensure latest artifacts are in public data
         run: |
           mkdir -p apps/web/public/data
-          cp data/artifacts/latest/*.json apps/web/public/data/
+          cp data/artifacts/latest/metrics.json apps/web/public/data/
+          cp data/artifacts/latest/price_series.json apps/web/public/data/
 
       - name: Build web app
         working-directory: apps/web

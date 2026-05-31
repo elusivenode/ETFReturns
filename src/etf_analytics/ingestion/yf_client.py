@@ -27,6 +27,9 @@ def fetch_price_history(ticker: str, last_cached_date: str | None) -> pd.DataFra
 def fetch_dividend_history(ticker: str, last_cached_ex_date: str | None) -> pd.Series:
     info = yf.Ticker(ticker)
     series = info.dividends
+    # yfinance >= 0.2.x may return tz-aware index; strip to keep storage tz-naive
+    if not series.empty and series.index.tz is not None:
+        series.index = series.index.tz_convert("UTC").tz_localize(None)
     if last_cached_ex_date:
         cutoff = pd.Timestamp(last_cached_ex_date) - pd.Timedelta(days=7)
         series = series[series.index >= cutoff]

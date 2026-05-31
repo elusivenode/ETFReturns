@@ -1,82 +1,114 @@
 [
   {
-    "ticker": "A200.AX",
-    "total_return": 0.9550740709555521,
-    "cagr": 0.0867958779527156,
-    "volatility": 0.1529355476944684,
-    "max_drawdown": -0.35547184310521573,
-    "distribution_yield": 0.03399165234469587
-  },
-  {
-    "ticker": "AAA.AX",
-    "total_return": 0.41290209117131815,
-    "cagr": 0.02459935356319365,
-    "volatility": 0.004190179743706296,
-    "max_drawdown": -0.0035817944839479088,
-    "distribution_yield": 0.03902614011277621
+    "ticker": "DHHF.AX",
+    "total_return": 0.9278870674264554,
+    "cagr": 0.10650552893681442,
+    "volatility": 0.13190478374714942,
+    "max_drawdown": -0.2854456802932267,
+    "distribution_yield": 0.0218912013897466
   },
   {
     "ticker": "GROW.AX",
     "total_return": 0.6595238298924735,
-    "cagr": 0.05306794224974287,
-    "volatility": 0.07685556828064902,
-    "max_drawdown": -0.1093333053085207,
+    "cagr": 0.05303752270156359,
+    "volatility": 0.07689710772468573,
+    "max_drawdown": -0.1093332963318262,
     "distribution_yield": 0.058083535633734716
   },
   {
-    "ticker": "IFRA.AX",
-    "total_return": 1.0968877487835584,
-    "cagr": 0.07626002723536862,
-    "volatility": 0.15080331876707467,
-    "max_drawdown": -0.36359782775977845,
-    "distribution_yield": 0.030066379603628984
+    "ticker": "IAF.AX",
+    "total_return": 0.45870357437010356,
+    "cagr": 0.026931612664057525,
+    "volatility": 0.045200543935901664,
+    "max_drawdown": -0.1550345979173572,
+    "distribution_yield": 0.031059277429793822
   },
   {
-    "ticker": "MVW.AX",
-    "total_return": 1.792929044405347,
-    "cagr": 0.08760867159707875,
-    "volatility": 0.15778331702794016,
-    "max_drawdown": -0.38799137961558616,
-    "distribution_yield": 0.045922407707279324
+    "ticker": "IFRA.AX",
+    "total_return": 1.0690494824822143,
+    "cagr": 0.07479117955735681,
+    "volatility": 0.15077992125398187,
+    "max_drawdown": -0.3635978909889933,
+    "distribution_yield": 0.03798971043172499
+  },
+  {
+    "ticker": "IOZ.AX",
+    "total_return": 2.1474819231040354,
+    "cagr": 0.07691133858470489,
+    "volatility": 0.14715612195407976,
+    "max_drawdown": -0.3574847074320807,
+    "distribution_yield": 0.03548274870766683
+  },
+  {
+    "ticker": "IVV.AX",
+    "total_return": -0.4677351746094126,
+    "cagr": -0.03368495907593072,
+    "volatility": 3.243713915084288,
+    "max_drawdown": -0.9558284991778089,
+    "distribution_yield": 0.00969024559197461
+  },
+  {
+    "ticker": "VACF.AX",
+    "total_return": 0.3268408770386608,
+    "cagr": 0.028640022214307725,
+    "volatility": 0.03667149015409038,
+    "max_drawdown": -0.12079067846819413,
+    "distribution_yield": 0.039198104884652724
   },
   {
     "ticker": "VAF.AX",
-    "total_return": 0.3993418297638167,
-    "cagr": 0.025061766259258933,
-    "volatility": 0.04227069003909299,
-    "max_drawdown": -0.15560471946355592,
-    "distribution_yield": 0.032242797200626144
+    "total_return": 0.4002627017268021,
+    "cagr": 0.02510119410097489,
+    "volatility": 0.042264631170476956,
+    "max_drawdown": -0.15560481362701928,
+    "distribution_yield": 0.038682975977436786
+  },
+  {
+    "ticker": "VAP.AX",
+    "total_return": 2.4823663587140645,
+    "cagr": 0.08309862865653028,
+    "volatility": 0.1903391027371181,
+    "max_drawdown": -0.4841269912747309,
+    "distribution_yield": 0.030889336234912742
   },
   {
     "ticker": "VAS.AX",
-    "total_return": 2.7831907494084818,
-    "cagr": 0.0810636843801178,
-    "volatility": 0.1493844615278973,
-    "max_drawdown": -0.3575203829598974,
-    "distribution_yield": 0.031650709234572805
+    "total_return": 2.808438287970721,
+    "cagr": 0.08145783182939303,
+    "volatility": 0.1494450676243085,
+    "max_drawdown": -0.35752039831930094,
+    "distribution_yield": 0.03924753683864473
+  },
+  {
+    "ticker": "VDBA.AX",
+    "total_return": 0.6364869912344111,
+    "cagr": 0.059513617571148814,
+    "volatility": 0.07540581979786948,
+    "max_drawdown": -0.18309615851769967,
+    "distribution_yield": 0.03500390245834365
   },
   {
     "ticker": "VGAD.AX",
-    "total_return": 2.4867682245428924,
-    "cagr": 0.11450431978444109,
-    "volatility": 0.16591542927165517,
-    "max_drawdown": -0.36063263594765704,
-    "distribution_yield": 0.03621222087428354
+    "total_return": 2.499828374634584,
+    "cagr": 0.11480845860410094,
+    "volatility": 0.1658762466668557,
+    "max_drawdown": -0.3606326526994026,
+    "distribution_yield": 0.042013137632862206
   },
   {
     "ticker": "VGS.AX",
-    "total_return": 3.239953879761643,
-    "cagr": 0.1335855214673396,
-    "volatility": 0.13251567980651427,
-    "max_drawdown": -0.23390752629275957,
-    "distribution_yield": 0.016084105498997806
+    "total_return": 3.254592428379709,
+    "cagr": 0.133856992976487,
+    "volatility": 0.13247155852407771,
+    "max_drawdown": -0.23390742945230736,
+    "distribution_yield": 0.018539955760302356
   },
   {
     "ticker": "VHY.AX",
-    "total_return": 2.768781739124234,
-    "cagr": 0.09240486103598444,
-    "volatility": 0.14441011170592577,
-    "max_drawdown": -0.3554150642366122,
-    "distribution_yield": 0.054599080912799136
+    "total_return": 2.7845468626673884,
+    "cagr": 0.09267334896544854,
+    "volatility": 0.14441071898335153,
+    "max_drawdown": -0.35541520547186467,
+    "distribution_yield": 0.06402836485287991
   }
 ]
