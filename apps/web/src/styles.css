@@ -962,6 +962,125 @@ th {
 .combined-alloc-name { color: var(--slate-500); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .combined-alloc-weight { font-weight: 700; color: var(--slate-800); text-align: right; }
 
+/* ── ETF card actions row ────────────────────────────────────────────────── */
+
+.etf-card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: auto;
+}
+
+.etf-card-actions .btn {
+  width: 100%;
+  text-align: center;
+}
+
+.btn-returns {
+  background: var(--slate-100);
+  border: 1px solid var(--border);
+  color: var(--slate-600);
+  font-size: 0.82rem;
+  padding: 7px 12px;
+}
+.btn-returns:hover { background: var(--slate-200); color: var(--slate-800); }
+.btn-returns.active { background: var(--green-100); color: var(--green-700); border-color: var(--green-700); }
+
+/* ── Returns popup ───────────────────────────────────────────────────────── */
+
+.returns-popup {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14);
+  width: 290px;
+  overflow: hidden;
+  z-index: 300;
+}
+
+.returns-popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px 8px;
+  background: var(--green-50);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--slate-800);
+}
+
+.returns-popup-date {
+  font-weight: 400;
+  color: var(--slate-400);
+  font-size: 0.78rem;
+}
+
+.returns-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.returns-table th {
+  padding: 7px 12px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--slate-400);
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+
+.returns-table td {
+  padding: 7px 12px;
+  font-size: 0.84rem;
+  border-bottom: 1px solid var(--slate-100);
+  color: var(--slate-800);
+}
+
+.returns-table tr:last-child td { border-bottom: none; }
+.returns-table td:nth-child(2) { font-weight: 700; }
+
+.return-positive { color: var(--green-700); }
+.return-negative { color: var(--red-600); }
+
+.returns-no-data {
+  padding: 14px;
+  font-size: 0.82rem;
+  color: var(--slate-400);
+  text-align: center;
+}
+
+/* ── Sync bar ────────────────────────────────────────────────────────────── */
+
+.sync-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 12px 20px;
+}
+
+.sync-bar-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.sync-bar-label strong { font-size: 0.875rem; color: var(--slate-800); }
+
+.sync-bar-hint { font-size: 0.78rem; color: var(--slate-400); }
+
+.sync-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
 /* ── Compare page ────────────────────────────────────────────────────────── */
 
 .compare-controls {

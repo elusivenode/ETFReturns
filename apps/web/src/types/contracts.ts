@@ -2,11 +2,23 @@
 
 export type MetricRow = {
   ticker: string;
+  latest_date: string;
   total_return: number;
   cagr: number;
   volatility: number;
   max_drawdown: number;
   distribution_yield: number;
+  // Per-period annualised return + volatility (null if insufficient history)
+  cagr_1y: number | null;
+  cagr_2y: number | null;
+  cagr_3y: number | null;
+  cagr_4y: number | null;
+  cagr_5y: number | null;
+  vol_1y: number | null;
+  vol_2y: number | null;
+  vol_3y: number | null;
+  vol_4y: number | null;
+  vol_5y: number | null;
 };
 
 export type CorrelationPayload = {
@@ -63,4 +75,9 @@ export interface MemberPortfolio {
 export interface PortfolioState {
   cashYield: number;                           // % p.a., shared across both members
   members: [MemberPortfolio, MemberPortfolio]; // always exactly two
+}
+
+// Stored in data/portfolio-state.json via GitHub API for cross-device state sync
+export interface PortfolioStateFile extends PortfolioState {
+  saved_at: string;  // ISO timestamp
 }
