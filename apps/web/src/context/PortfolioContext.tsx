@@ -29,6 +29,8 @@ interface PortfolioContextType {
   addMemberETF: (idx: number, ticker: string) => void;
   removeMemberETF: (idx: number, ticker: string) => void;
   setMemberWeight: (idx: number, ticker: string, weight: number) => void;
+  // Replaces the entire state — used when loading from GitHub
+  restoreState: (state: PortfolioState) => void;
   // Derived
   combinedAllocations: Allocation[];
   totalBalance: number;
@@ -102,6 +104,10 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
     }));
   }, []);
 
+  const restoreState = useCallback((state: PortfolioState) => {
+    setPortfolio(state);
+  }, []);
+
   const setMemberWeight = useCallback((idx: number, ticker: string, weight: number) => {
     setPortfolio(p => ({
       ...p,
@@ -142,6 +148,7 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
         addMemberETF,
         removeMemberETF,
         setMemberWeight,
+        restoreState,
         combinedAllocations,
         totalBalance,
       }}

@@ -4,7 +4,7 @@ import { ASSET_CLASSES, findETF, findAssetClass } from '../data/assetClasses';
 import { findMetric } from '../hooks/useArtifacts';
 import { AllocationPie } from '../components/AllocationPie';
 import { GitHubSettings, loadGitHubConfig } from '../components/GitHubSettings';
-import { commitPortfolio } from '../lib/github';
+import { commitPortfolio, savePortfolioState, loadPortfolioState } from '../lib/github';
 import type { MemberPortfolio, MetricRow } from '../types/contracts';
 import type { Page } from '../components/Nav';
 
@@ -225,12 +225,16 @@ function SaveIndicator({ status, errorMsg }: { status: SaveStatus; errorMsg: str
 
 // ── Main page ─────────────────────────────────────────────────────────────────
 
+type SyncStatus = 'idle' | 'saving' | 'loading' | 'saved' | 'loaded' | 'error';
+
 export function PortfolioBuilder({ metrics, onNavigate }: Props) {
-  const { portfolio, setCashYield, combinedAllocations } = usePortfolio();
+  const { portfolio, setCashYield, combinedAllocations, restoreState } = usePortfolio();
 
   const [showSettings, setShowSettings] = useState(false);
-  const [saveStatus, setSaveStatus]     = useState<SaveStatus>('idle');
-  const [saveError,  setSaveError]      = useState('');
+  const [saveStatus,   setSaveStatus]   = useState<SaveStatus>('idle');
+  const [saveError,    setSaveError]    = useState('');
+  const [syncStatus,   setSyncStatus]   = useState<SyncStatus>('idle');
+  const [syncMsg,      setSyncMsg]      = useState('');
 
   function validate(): string | null {
     if (combinedAllocations.length === 0) {
@@ -280,6 +284,33 @@ export function PortfolioBuilder({ metrics, onNavigate }: Props) {
     }
   }
 
+  async function handleSaveState() {
+    const cfg = loadGitHubConfig();
+    if (!cfg.token || !cfg.owner || !cfg.repo) { setShowSettings(true); return; }
+    setSyncStatus('saving'); setSyncMsg('');
+    try {
+      await savePortfolioState(cfg, portfolio);
+      setSyncStatus('saved'); setSyncMsg('State saved — share the GitHub token with your co-investor to load it.');
+    } catch (err) {
+      setSyncStatus('error'); setSyncMsg(err instanceof Error ? err.message : 'Unknown error');
+    }
+  }
+
+  async function handleLoadState() {
+    const cfg = loadGitHubConfig();
+    if (!cfg.token || !cfg.owner || !cfg.repo) { setShowSettings(true); return; }
+    setSyncStatus('loading'); setSyncMsg('');
+    try {
+      const state = await loadPortfolioState(cfg);
+      if (!state) { setSyncStatus('error'); setSyncMsg('No saved state found in the repository.'); return; }
+      restoreState(state);
+      setSyncStatus('loaded');
+      setSyncMsg(`Loaded state saved on ${new Date(state.saved_at).toLocaleString()}`);
+    } catch (err) {
+      setSyncStatus('error'); setSyncMsg(err instanceof Error ? err.message : 'Unknown error');
+    }
+  }
+
   return (
     <div className="page">
       <div className="page-header">
@@ -320,6 +351,41 @@ export function PortfolioBuilder({ metrics, onNavigate }: Props) {
             disabled={saveStatus === 'saving'}
           >
             {saveStatus === 'saving' ? 'Saving…' : 'Save Portfolio'}
+          </button>
+        </div>
+      </div>
+
+      {/* Cross-device state sync */}
+      <div className="card sync-bar">
+        <div className="sync-bar-label">
+          <strong>Cross-device sync</strong>
+          <span className="sync-bar-hint">Save partial work to GitHub and load it on any device.</span>
+        </div>
+        <div className="sync-bar-actions">
+          {syncStatus !== 'idle' && (
+            <span className={`save-status ${
+              syncStatus === 'saving' || syncStatus === 'loading' ? 'status-saving' :
+              syncStatus === 'saved'  || syncStatus === 'loaded'  ? 'status-saved'  :
+              'status-error'
+            }`}>
+              {syncStatus === 'saving'  ? 'Saving…'  :
+               syncStatus === 'loading' ? 'Loading…' :
+               syncMsg}
+            </span>
+          )}
+          <button
+            className="btn btn-secondary"
+            onClick={handleLoadState}
+            disabled={syncStatus === 'loading' || syncStatus === 'saving'}
+          >
+            ↓ Load State
+          </button>
+          <button
+            className="btn btn-secondary"
+            onClick={handleSaveState}
+            disabled={syncStatus === 'saving' || syncStatus === 'loading'}
+          >
+            ↑ Save State
           </button>
         </div>
       </div>

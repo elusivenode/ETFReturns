@@ -1,0 +1,8 @@
+{
+  "saved_at": "",
+  "cashYield": 4.5,
+  "members": [
+    { "name": "Hamish", "balance": 425000, "allocations": [] },
+    { "name": "Becky",  "balance": 425000, "allocations": [] }
+  ]
+}
