@@ -17,6 +17,8 @@ const fmtCurrency = (n: number) =>
     maximumFractionDigits: 0,
   }).format(n);
 
+const fmtPct = (n: number) => `${n.toFixed(1)}%`;
+
 function resolveYield(ticker: string, metrics: MetricRow[], cashYield: number): number {
   if (ticker === 'CASH') return cashYield;
   const live = findMetric(metrics, ticker);
@@ -127,12 +129,12 @@ export function Dashboard({ metrics, onNavigate }: Props) {
                       <div
                         className="role-bar"
                         style={{
-                          width: `${pct}%`,
+                          width: `${Math.min(pct, 100).toFixed(1)}%`,
                           background: ROLE_COLORS[role] ?? '#ccc',
                         }}
                       />
                     </div>
-                    <span className="role-pct">{pct}%</span>
+                    <span className="role-pct">{fmtPct(pct)}</span>
                   </div>
                 ))}
             </div>
@@ -144,23 +146,23 @@ export function Dashboard({ metrics, onNavigate }: Props) {
             <div className="health-list">
               <HealthItem
                 ok={ausWeight <= 60}
-                text={`Australian concentration: ${ausWeight}% in AU assets`}
+                text={`Australian concentration: ${fmtPct(ausWeight)} in AU assets`}
                 detail={ausWeight > 60 ? 'Consider increasing global exposure' : undefined}
               />
               <HealthItem
                 ok={maxSingle <= 45}
-                text={`Largest single holding: ${maxSingle}%`}
+                text={`Largest single holding: ${fmtPct(maxSingle)}`}
                 detail={maxSingle > 45 ? 'High concentration in one ETF' : undefined}
               />
               <HealthItem
                 ok={defensiveWeight >= 20}
-                text={`Defensive buffer: ${defensiveWeight}% in bonds/cash`}
+                text={`Defensive buffer: ${fmtPct(defensiveWeight)} in bonds/cash`}
                 detail={defensiveWeight < 20 ? 'Consider increasing fixed income or cash for capital preservation' : undefined}
               />
               {vapWeight > 5 && (
                 <HealthItem
                   ok={false}
-                  text={`VAP at ${vapWeight}% — you already have significant direct property`}
+                  text={`VAP at ${fmtPct(vapWeight)} — you already have significant direct property`}
                   detail="Consider keeping listed property minimal"
                 />
               )}
@@ -196,7 +198,7 @@ export function Dashboard({ metrics, onNavigate }: Props) {
                       <span className="table-name">{a.ticker === 'CASH' ? 'Cash' : findETF(a.ticker)?.name ?? ''}</span>
                     </td>
                     <td>{cls?.name ?? '—'}</td>
-                    <td>{a.weight}%</td>
+                    <td>{fmtPct(a.weight)}</td>
                     <td>{y.toFixed(1)}%</td>
                     <td>{fmtCurrency(income)}</td>
                   </tr>
