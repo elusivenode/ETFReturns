@@ -75,7 +75,9 @@ def calc_rolling_returns(price_df: pd.DataFrame) -> pd.DataFrame:
     return pd.concat(output, ignore_index=True)
 
 
-def backtest_buy_and_hold(price_df: pd.DataFrame, weights: dict[str, float], initial_capital: float = 100000.0) -> pd.DataFrame:
+def backtest_buy_and_hold(
+    price_df: pd.DataFrame, weights: dict[str, float], initial_capital: float = 100000.0
+) -> pd.DataFrame:
     piv = (
         price_df.pivot(index="date", columns="ticker", values="adj_close")
         .sort_index()

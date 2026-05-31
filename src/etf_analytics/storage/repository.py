@@ -22,7 +22,9 @@ def get_last_dividend_date(conn: sqlite3.Connection, ticker: str) -> str | None:
     return row["max_date"] if row and row["max_date"] else None
 
 
-def upsert_metadata(conn: sqlite3.Connection, ticker: str, name: str, currency: str, exchange: str) -> None:
+def upsert_metadata(
+    conn: sqlite3.Connection, ticker: str, name: str, currency: str, exchange: str
+) -> None:
     conn.execute(
         """
         INSERT INTO metadata(ticker, name, currency, exchange, last_refreshed_at)
