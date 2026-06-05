@@ -10,9 +10,10 @@ from etf_analytics.ingestion.yf_client import (
     fetch_metadata,
     fetch_price_history,
 )
-from etf_analytics.settings import ARTIFACT_DIR, SCHEMA_PATH, SQLITE_PATH, WATCHLIST_PATH
+from etf_analytics.settings import ARTIFACT_DIR, OVERRIDES_PATH, SCHEMA_PATH, SQLITE_PATH, WATCHLIST_PATH
 from etf_analytics.storage.db import connect, init_db
 from etf_analytics.storage.repository import (
+    apply_price_overrides,
     get_last_dividend_date,
     get_last_price_date,
     load_dividends,
@@ -55,6 +56,7 @@ def build_artifacts(tickers: list[str], artifact_dir: Path = ARTIFACT_DIR) -> No
     finally:
         conn.close()
 
+    price_df = apply_price_overrides(price_df, OVERRIDES_PATH)
     metrics_df = calc_summary_metrics(price_df, dividend_df)
 
     write_metrics(artifact_dir / "metrics.json", metrics_df)

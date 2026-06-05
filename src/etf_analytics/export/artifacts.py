@@ -38,6 +38,28 @@ def write_backtest(path: Path, backtest_df: pd.DataFrame) -> None:
     _write_json(path, frame.to_dict(orient="records"))
 
 
+def _scrub_price_outliers(series: pd.Series, max_daily_move: float = 0.5) -> pd.Series:
+    """Replace prices that produce an unrealistic single-day return with a linear interpolation.
+
+    A spike-and-revert pair (e.g. yfinance bad adj_close) is detected when:
+      - |return[i]| > max_daily_move, AND
+      - |return from [i-1] to [i+1]| < max_daily_move  (i.e. the next price is back to normal)
+    The bad price at [i] is replaced with the midpoint of its neighbours.
+    """
+    prices = series.copy().astype(float)
+    vals = prices.values
+    for i in range(1, len(vals) - 1):
+        if vals[i - 1] <= 0:
+            continue
+        ret = vals[i] / vals[i - 1] - 1
+        if abs(ret) > max_daily_move:
+            next_ret = vals[i + 1] / vals[i - 1] - 1
+            if abs(next_ret) < max_daily_move:
+                vals[i] = (vals[i - 1] + vals[i + 1]) / 2
+    prices[:] = vals
+    return prices
+
+
 def write_price_series(path: Path, price_df: pd.DataFrame) -> None:
     """Export adj_close price series per ticker for the Compare chart.
 
@@ -47,6 +69,7 @@ def write_price_series(path: Path, price_df: pd.DataFrame) -> None:
     result: dict[str, dict[str, list]] = {}
     for ticker, grp in price_df.groupby("ticker"):
         series = grp.set_index("date")["adj_close"].sort_index().dropna()
+        series = _scrub_price_outliers(series)
         result[str(ticker)] = {
             "dates":  [d.strftime("%Y-%m-%d") for d in series.index],
             "prices": [round(float(p), 4) for p in series.values],

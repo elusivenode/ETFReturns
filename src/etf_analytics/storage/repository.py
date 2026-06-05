@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import sqlite3
 from datetime import datetime, timezone
+from pathlib import Path
 
 import pandas as pd
 
@@ -100,6 +101,25 @@ def load_prices(conn: sqlite3.Connection, tickers: list[str]) -> pd.DataFrame:
     ORDER BY date ASC
     """
     return pd.read_sql_query(query, conn, params=tickers, parse_dates=["date"])
+
+
+def apply_price_overrides(price_df: pd.DataFrame, overrides_path: Path) -> pd.DataFrame:
+    """Apply known manual price corrections from data/price_overrides.csv.
+
+    The CSV must have columns: ticker, date, adj_close, reason.
+    Rows in price_df matching (ticker, date) have their adj_close replaced.
+    """
+    if not overrides_path.exists():
+        return price_df
+    overrides = pd.read_csv(overrides_path, parse_dates=["date"])
+    if overrides.empty:
+        return price_df
+    df = price_df.copy()
+    for _, row in overrides.iterrows():
+        mask = (df["ticker"] == row["ticker"]) & (df["date"] == row["date"])
+        if mask.any():
+            df.loc[mask, "adj_close"] = float(row["adj_close"])
+    return df
 
 
 def load_dividends(conn: sqlite3.Connection, tickers: list[str]) -> pd.DataFrame:

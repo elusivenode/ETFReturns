@@ -60,6 +60,14 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(portfolio));
   }, [portfolio]);
 
+  useEffect(() => {
+    if (!import.meta.env.DEV) return;
+    fetch('/dev-portfolio-state.json')
+      .then(r => r.ok ? r.json() : null)
+      .then((state: PortfolioState | null) => { if (state?.members) setPortfolio(state); })
+      .catch(() => {});
+  }, []);
+
   const setCashYield = useCallback(
     (v: number) => setPortfolio(p => ({ ...p, cashYield: v })),
     [],
