@@ -1,8 +1,53 @@
 {
-  "saved_at": "",
   "cashYield": 4.5,
   "members": [
-    { "name": "Hamish", "balance": 425000, "allocations": [] },
-    { "name": "Becky",  "balance": 425000, "allocations": [] }
-  ]
+    {
+      "name": "Hamish",
+      "balance": 300000,
+      "allocations": [
+        {
+          "ticker": "IOZ.AX",
+          "weight": 15
+        },
+        {
+          "ticker": "IVV.AX",
+          "weight": 15
+        },
+        {
+          "ticker": "GROW.AX",
+          "weight": 20
+        },
+        {
+          "ticker": "QPON.AX",
+          "weight": 15
+        },
+        {
+          "ticker": "MXT.AX",
+          "weight": 15
+        },
+        {
+          "ticker": "CASH",
+          "weight": 5
+        },
+        {
+          "ticker": "GLIN.AX",
+          "weight": 5
+        },
+        {
+          "ticker": "VAP.AX",
+          "weight": 5
+        },
+        {
+          "ticker": "GOLD.AX",
+          "weight": 5
+        }
+      ]
+    },
+    {
+      "name": "Becky",
+      "balance": 425000,
+      "allocations": []
+    }
+  ],
+  "saved_at": "2026-06-05T01:08:33.629Z"
 }
