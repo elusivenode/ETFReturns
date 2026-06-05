@@ -47,7 +47,7 @@ def _scrub_price_outliers(series: pd.Series, max_daily_move: float = 0.5) -> pd.
     The bad price at [i] is replaced with the midpoint of its neighbours.
     """
     prices = series.copy().astype(float)
-    vals = prices.values
+    vals = prices.to_numpy(copy=True)
     for i in range(1, len(vals) - 1):
         if vals[i - 1] <= 0:
             continue
