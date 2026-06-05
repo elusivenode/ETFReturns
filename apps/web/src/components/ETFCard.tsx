@@ -36,6 +36,7 @@ export function ETFCard({ etf, liveMetric, onNavigateToPortfolio }: Props) {
     : null;
   const displayYield = liveYield ?? etf.approxYield;
   const yieldLabel   = liveYield ? 'Trailing yield' : 'Est. yield';
+  const feeLabel     = etf.feeVerified ? 'Fee p.a. (verified)' : 'Fee p.a. (est.)';
 
   // ── Returns popup ────────────────────────────────────────────────────────
   const [showReturns, setShowReturns] = useState(false);
@@ -82,10 +83,16 @@ export function ETFCard({ etf, liveMetric, onNavigateToPortfolio }: Props) {
           </div>
           <div className="etf-metric">
             <span className="metric-value">{etf.fee.toFixed(2)}%</span>
-            <span className="metric-label">Fee p.a.</span>
+            <span className="metric-label">{feeLabel}</span>
           </div>
         </div>
       </div>
+
+      {(!etf.feeVerified || etf.metadataNote) && (
+        <div className="section-note" style={{ marginBottom: 8 }}>
+          {etf.metadataNote ?? 'Some metadata values are estimated pending PDS/issuer verification.'}
+        </div>
+      )}
 
       <div className="etf-tags">
         {etf.tags.map(t => <span key={t} className="tag-chip">{t}</span>)}

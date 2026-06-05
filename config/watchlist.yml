@@ -1,20 +1,38 @@
 tickers:
   # Australian Equities
   - VAS.AX
-  - VHY.AX
   - IOZ.AX
-  # Global Equities
+  - VHY.AX
+  # International Developed Equities
   - VGS.AX
   - VGAD.AX
   - IVV.AX
-  # Fixed Income
+  # International Small Caps
+  - VISM.AX
+  - IJR.AX
+  # Emerging Markets
+  - VGE.AX
+  - IEM.AX
+  # Property
+  - VAP.AX
+  # Infrastructure
+  - IFRA.AX
+  - GLIN.AX
+  # Australian Bonds
   - VAF.AX
   - IAF.AX
+  # Credit
   - VACF.AX
-  # Defensive / Real Return
+  - QPON.AX
+  - FLOT.AX
+  - MXT.AX
+  - MOT.AX
+  - PCI.AX
+  # Inflation Protection
+  - ILB.AX
+  # Diversified / Real Return
   - GROW.AX
   - VDBA.AX
   - DHHF.AX
-  # Property & Infrastructure
-  - VAP.AX
-  - IFRA.AX
+  # Alternatives
+  - GOLD.AX

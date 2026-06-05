@@ -1203,6 +1203,66 @@ th {
   padding: 8px 12px;
 }
 
+/* ── Backtest page ───────────────────────────────────────────────────────── */
+
+.backtest-status-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.backtest-status-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--green-50);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.backtest-status-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.backtest-pill {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: 16px;
+  padding: 3px 8px;
+}
+
+.backtest-pill.ok {
+  color: var(--green-700);
+  background: var(--green-100);
+}
+
+.backtest-pill.warning {
+  color: var(--amber-600);
+  background: var(--amber-50);
+  border: 1px solid #f0c060;
+}
+
+.backtest-status-msg {
+  font-size: 0.86rem;
+  color: var(--slate-800);
+}
+
+.backtest-status-sub {
+  font-size: 0.8rem;
+  color: var(--slate-400);
+}
+
+.backtest-footnote {
+  font-size: 0.82rem;
+  color: var(--slate-400);
+}
+
 /* ── Responsive ──────────────────────────────────────────────────────────── */
 
 @media (max-width: 800px) {
@@ -1230,4 +1290,6 @@ th {
   .builder-summary > .card { flex: 1 1 240px; }
 
   .member-cols { grid-template-columns: 1fr; }
+
+  .backtest-status-grid { grid-template-columns: 1fr; }
 }

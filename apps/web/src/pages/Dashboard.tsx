@@ -79,7 +79,7 @@ export function Dashboard({ metrics, onNavigate }: Props) {
   const ausWeight = active
     .filter(a => {
       const cls = findAssetClass(a.ticker);
-      return cls?.id === 'aus-equities' || cls?.id === 'property-infra';
+      return cls?.id === 'aus-equities' || cls?.id === 'property';
     })
     .reduce((s, a) => s + a.weight, 0);
 

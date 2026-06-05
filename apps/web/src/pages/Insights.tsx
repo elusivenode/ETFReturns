@@ -49,7 +49,12 @@ export function Insights({ metrics, onNavigate }: Props) {
   const equityWeight = active
     .filter(a => {
       const cls = findAssetClass(a.ticker);
-      return cls?.id === 'aus-equities' || cls?.id === 'global-equities';
+      return (
+        cls?.id === 'aus-equities'
+        || cls?.id === 'intl-developed'
+        || cls?.id === 'intl-small-caps'
+        || cls?.id === 'emerging-markets'
+      );
     })
     .reduce((s, a) => s + a.weight, 0);
 
@@ -58,17 +63,30 @@ export function Insights({ metrics, onNavigate }: Props) {
     .reduce((s, a) => s + a.weight, 0);
 
   const globalEquityWeight = active
-    .filter(a => findAssetClass(a.ticker)?.id === 'global-equities')
+    .filter(a => {
+      const id = findAssetClass(a.ticker)?.id;
+      return id === 'intl-developed' || id === 'intl-small-caps' || id === 'emerging-markets';
+    })
     .reduce((s, a) => s + a.weight, 0);
 
   const bondWeight = active
-    .filter(a => findAssetClass(a.ticker)?.id === 'fixed-income')
+    .filter(a => {
+      const id = findAssetClass(a.ticker)?.id;
+      return id === 'aus-bonds' || id === 'credit' || id === 'inflation-protection';
+    })
     .reduce((s, a) => s + a.weight, 0);
 
   const defensiveWeight = active
     .filter(a => {
       const cls = findAssetClass(a.ticker);
-      return cls?.id === 'defensive-alternatives' || cls?.id === 'fixed-income' || a.ticker === 'CASH';
+      return (
+        cls?.id === 'aus-bonds'
+        || cls?.id === 'credit'
+        || cls?.id === 'inflation-protection'
+        || cls?.id === 'diversified-real-return'
+        || cls?.id === 'alternatives'
+        || a.ticker === 'CASH'
+      );
     })
     .reduce((s, a) => s + a.weight, 0);
 
@@ -88,7 +106,12 @@ export function Insights({ metrics, onNavigate }: Props) {
   const equityIncomeReduction = active
     .filter(a => {
       const cls = findAssetClass(a.ticker);
-      return cls?.id === 'aus-equities' || cls?.id === 'global-equities';
+      return (
+        cls?.id === 'aus-equities'
+        || cls?.id === 'intl-developed'
+        || cls?.id === 'intl-small-caps'
+        || cls?.id === 'emerging-markets'
+      );
     })
     .reduce((sum, a) => sum + (a.weight / 100) * (resolveYield(a.ticker, metrics, cashYield) / 100) * totalValue * 0.30, 0);
 

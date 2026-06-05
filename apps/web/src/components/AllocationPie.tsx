@@ -3,21 +3,33 @@ import { ASSET_CLASSES } from '../data/assetClasses';
 import type { Allocation } from '../types/contracts';
 
 const CLASS_COLORS: Record<string, string> = {
-  'aus-equities':           '#0a6e4f',
-  'global-equities':        '#1a56b0',
-  'fixed-income':           '#6b7a8d',
-  'defensive-alternatives': '#b8860b',
-  'property-infra':         '#7b3c8f',
-  'cash':                   '#a0a0a0',
+  'aus-equities':            '#0a6e4f',
+  'intl-developed':          '#1a56b0',
+  'intl-small-caps':         '#2563eb',
+  'emerging-markets':        '#0f766e',
+  'property':                '#7b3c8f',
+  'infrastructure':          '#8b5cf6',
+  'aus-bonds':               '#6b7a8d',
+  'credit':                  '#475569',
+  'inflation-protection':    '#b8860b',
+  'diversified-real-return': '#d97706',
+  'alternatives':            '#92400e',
+  'cash':                    '#a0a0a0',
 };
 
 const CLASS_LABELS: Record<string, string> = {
-  'aus-equities':           'Aust. Equities',
-  'global-equities':        'Global Equities',
-  'fixed-income':           'Fixed Income',
-  'defensive-alternatives': 'Defensive',
-  'property-infra':         'Property & Infra',
-  'cash':                   'Cash',
+  'aus-equities':            'Aust. Equities',
+  'intl-developed':          'Intl Developed',
+  'intl-small-caps':         'Intl Small Caps',
+  'emerging-markets':        'Emerging Mkts',
+  'property':                'Property',
+  'infrastructure':          'Infrastructure',
+  'aus-bonds':               'Aust. Bonds',
+  'credit':                  'Credit',
+  'inflation-protection':    'Inflation Protection',
+  'diversified-real-return': 'Diversified / Real Return',
+  'alternatives':            'Alternatives',
+  'cash':                    'Cash',
 };
 
 function classIdForTicker(ticker: string): string {

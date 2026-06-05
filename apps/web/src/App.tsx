@@ -7,6 +7,7 @@ import { Explore } from './pages/Explore';
 import { PortfolioBuilder } from './pages/PortfolioBuilder';
 import { Insights } from './pages/Insights';
 import { Compare } from './pages/Compare';
+import { Backtest } from './pages/Backtest';
 
 function AppInner() {
   const [page, setPage] = useState<Page>('dashboard');
@@ -21,6 +22,7 @@ function AppInner() {
         {page === 'portfolio' && <PortfolioBuilder metrics={metrics} onNavigate={setPage} />}
         {page === 'insights'  && <Insights  metrics={metrics} onNavigate={setPage} />}
         {page === 'compare'   && <Compare />}
+        {page === 'backtest'  && <Backtest />}
       </main>
     </>
   );

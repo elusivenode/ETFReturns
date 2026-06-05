@@ -40,7 +40,12 @@ export interface ETFDefinition {
   ticker: string;       // e.g. "VAS.AX"
   name: string;
   fee: number;          // management fee % p.a.
+  feeVerified?: boolean; // true when validated against PDS/issuer page
+  feeAsOf?: string;      // ISO date of fee verification
+  feeSource?: string;    // source reference, e.g. issuer URL or PDS name
   approxYield: number;  // estimated distribution yield % p.a.
+  yieldSource?: string;  // explanation of estimate source when live metric is unavailable
+  metadataNote?: string; // optional caveat for assessment
   tags: string[];
   pros: string[];
   cons: string[];

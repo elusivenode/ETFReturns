@@ -1,4 +1,4 @@
-export type Page = 'dashboard' | 'explore' | 'portfolio' | 'insights' | 'compare';
+export type Page = 'dashboard' | 'explore' | 'portfolio' | 'insights' | 'compare' | 'backtest';
 
 const LINKS: { page: Page; label: string }[] = [
   { page: 'dashboard', label: 'Dashboard' },
@@ -6,6 +6,7 @@ const LINKS: { page: Page; label: string }[] = [
   { page: 'portfolio', label: 'Portfolio' },
   { page: 'insights',  label: 'Insights' },
   { page: 'compare',   label: 'Compare' },
+  { page: 'backtest',  label: 'Backtest' },
 ];
 
 interface NavProps {
