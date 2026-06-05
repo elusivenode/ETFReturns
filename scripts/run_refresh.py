@@ -10,7 +10,13 @@ from etf_analytics.ingestion.yf_client import (
     fetch_metadata,
     fetch_price_history,
 )
-from etf_analytics.settings import ARTIFACT_DIR, OVERRIDES_PATH, SCHEMA_PATH, SQLITE_PATH, WATCHLIST_PATH
+from etf_analytics.settings import (
+    ARTIFACT_DIR,
+    OVERRIDES_PATH,
+    SCHEMA_PATH,
+    SQLITE_PATH,
+    WATCHLIST_PATH,
+)
 from etf_analytics.storage.db import connect, init_db
 from etf_analytics.storage.repository import (
     apply_price_overrides,
