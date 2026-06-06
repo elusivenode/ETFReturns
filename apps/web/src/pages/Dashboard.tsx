@@ -2,11 +2,13 @@ import { usePortfolio } from '../context/PortfolioContext';
 import { findETF, findAssetClass, ASSET_CLASSES } from '../data/assetClasses';
 import { findMetric } from '../hooks/useArtifacts';
 import { AllocationPie } from '../components/AllocationPie';
-import type { MetricRow } from '../types/contracts';
+import { PerfTable, fmtPeriodPct, fmtSharpe } from '../components/PerfTables';
+import type { MetricRow, PeriodMetricRow } from '../types/contracts';
 import type { Page } from '../components/Nav';
 
 interface Props {
   metrics: MetricRow[];
+  periodMetrics: PeriodMetricRow[];
   onNavigate: (page: Page) => void;
 }
 
@@ -33,7 +35,7 @@ const ROLE_COLORS: Record<string, string> = {
   defensive: '#b8860b',
 };
 
-export function Dashboard({ metrics, onNavigate }: Props) {
+export function Dashboard({ metrics, periodMetrics, onNavigate }: Props) {
   const { portfolio, combinedAllocations, totalBalance } = usePortfolio();
   const { cashYield } = portfolio;
   const allocations = combinedAllocations;
@@ -215,6 +217,30 @@ export function Dashboard({ metrics, onNavigate }: Props) {
           </tfoot>
         </table>
       </div>
+      <PerfTable
+        title="Returns"
+        tickers={active.filter(a => a.ticker !== 'CASH').sort((a, b) => b.weight - a.weight).map(a => a.ticker)}
+        periodMetrics={periodMetrics}
+        field="ret"
+        fmt={fmtPeriodPct}
+        colored
+      />
+      <PerfTable
+        title="Volatility (annualised)"
+        tickers={active.filter(a => a.ticker !== 'CASH').sort((a, b) => b.weight - a.weight).map(a => a.ticker)}
+        periodMetrics={periodMetrics}
+        field="vol"
+        fmt={fmtPeriodPct}
+        colored={false}
+      />
+      <PerfTable
+        title="Sharpe Ratio"
+        tickers={active.filter(a => a.ticker !== 'CASH').sort((a, b) => b.weight - a.weight).map(a => a.ticker)}
+        periodMetrics={periodMetrics}
+        field="sharpe"
+        fmt={fmtSharpe}
+        colored
+      />
     </div>
   );
 }

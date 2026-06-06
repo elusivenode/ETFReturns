@@ -325,6 +325,46 @@ button { cursor: pointer; font: inherit; }
 .table-name { color: var(--slate-400); font-size: 0.82rem; }
 .negative-cell { color: var(--red-600); }
 
+/* Performance tables (Returns / Volatility / Sharpe) */
+
+.perf-table-wrap {
+  overflow-x: auto;
+}
+
+.perf-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.perf-table th {
+  text-align: right;
+  padding: 8px 10px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--slate-400);
+  border-bottom: 2px solid var(--border);
+  white-space: nowrap;
+}
+
+.perf-table th:first-child { text-align: left; }
+
+.perf-table td {
+  text-align: right;
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--slate-100);
+  vertical-align: middle;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.perf-table td:first-child { text-align: left; }
+
+.perf-pos { color: var(--green-700); font-weight: 500; }
+.perf-neg { color: var(--red-600); font-weight: 500; }
+
 /* ── Explore ─────────────────────────────────────────────────────────────── */
 
 .asset-class-section { }

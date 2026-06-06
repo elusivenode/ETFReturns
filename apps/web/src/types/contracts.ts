@@ -21,6 +21,16 @@ export type MetricRow = {
   vol_5y: number | null;
 };
 
+export type PeriodMetricRow = {
+  ticker: string;
+  ret_1m:  number | null; ret_3m:  number | null; ret_6m:  number | null;
+  ret_1y:  number | null; ret_3y:  number | null; ret_5y:  number | null; ret_10y: number | null;
+  vol_1m:  number | null; vol_3m:  number | null; vol_6m:  number | null;
+  vol_1y:  number | null; vol_3y:  number | null; vol_5y:  number | null; vol_10y: number | null;
+  sharpe_1m:  number | null; sharpe_3m:  number | null; sharpe_6m:  number | null;
+  sharpe_1y:  number | null; sharpe_3y:  number | null; sharpe_5y:  number | null; sharpe_10y: number | null;
+};
+
 export type CorrelationPayload = {
   tickers: string[];
   matrix: number[][];

@@ -35,6 +35,7 @@ jobs:
         run: |
           mkdir -p apps/web/public/data
           cp data/artifacts/latest/metrics.json apps/web/public/data/
+          cp data/artifacts/latest/period_metrics.json apps/web/public/data/
           cp data/artifacts/latest/price_series.json apps/web/public/data/
 
       - name: Build web app

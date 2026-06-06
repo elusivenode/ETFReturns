@@ -60,6 +60,11 @@ def _scrub_price_outliers(series: pd.Series, max_daily_move: float = 0.5) -> pd.
     return prices
 
 
+def write_period_metrics(path: Path, period_df: pd.DataFrame) -> None:
+    """Export per-ticker period return/vol/sharpe to period_metrics.json."""
+    _write_json(path, period_df.where(pd.notna(period_df), None).to_dict(orient="records"))
+
+
 def write_price_series(path: Path, price_df: pd.DataFrame) -> None:
     """Export adj_close price series per ticker for the Compare chart.
 

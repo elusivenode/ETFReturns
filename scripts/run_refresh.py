@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from etf_analytics.analytics.metrics import calc_summary_metrics
-from etf_analytics.export.artifacts import write_metrics, write_price_series
+from etf_analytics.analytics.metrics import calc_summary_metrics, compute_period_metrics
+from etf_analytics.export.artifacts import write_metrics, write_period_metrics, write_price_series
 from etf_analytics.ingestion.watchlist import load_watchlist
 from etf_analytics.ingestion.yf_client import (
     fetch_dividend_history,
@@ -64,8 +64,10 @@ def build_artifacts(tickers: list[str], artifact_dir: Path = ARTIFACT_DIR) -> No
 
     price_df = apply_price_overrides(price_df, OVERRIDES_PATH)
     metrics_df = calc_summary_metrics(price_df, dividend_df)
+    period_df = compute_period_metrics(price_df)
 
     write_metrics(artifact_dir / "metrics.json", metrics_df)
+    write_period_metrics(artifact_dir / "period_metrics.json", period_df)
     write_price_series(artifact_dir / "price_series.json", price_df)
 
 
