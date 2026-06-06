@@ -1,18 +1,20 @@
 import { ASSET_CLASSES } from '../data/assetClasses';
 import { RoleBadge, RiskBadge } from '../components/Badge';
 import { ETFCard } from '../components/ETFCard';
-import { findMetric, findPeriodMetric } from '../hooks/useArtifacts';
+import { findMetric, findPeriodMetric, findRiskMetric } from '../hooks/useArtifacts';
 import { PerfTable, fmtPeriodPct, fmtSharpe } from '../components/PerfTables';
-import type { MetricRow, PeriodMetricRow } from '../types/contracts';
+import { RiskTable } from '../components/RiskTable';
+import type { MetricRow, PeriodMetricRow, RiskMetricRow } from '../types/contracts';
 import type { Page } from '../components/Nav';
 
 interface Props {
   metrics: MetricRow[];
   periodMetrics: PeriodMetricRow[];
+  riskMetrics: RiskMetricRow[];
   onNavigate: (page: Page) => void;
 }
 
-export function Explore({ metrics, periodMetrics, onNavigate }: Props) {
+export function Explore({ metrics, periodMetrics, riskMetrics, onNavigate }: Props) {
   const allTickers = ASSET_CLASSES.flatMap(c => c.etfs).map(e => e.ticker);
 
   // Sort by 3Y return ascending (nulls last)
@@ -23,6 +25,16 @@ export function Explore({ metrics, periodMetrics, onNavigate }: Props) {
     if (ra === null) return 1;
     if (rb === null) return -1;
     return ra - rb;
+  });
+
+  // Sort by Sharpe descending (nulls last)
+  const tickersByRisk = [...allTickers].sort((a, b) => {
+    const sa = findRiskMetric(riskMetrics, a)?.sharpe_annualised ?? null;
+    const sb = findRiskMetric(riskMetrics, b)?.sharpe_annualised ?? null;
+    if (sa === null && sb === null) return 0;
+    if (sa === null) return 1;
+    if (sb === null) return -1;
+    return sb - sa;
   });
 
   return (
@@ -102,6 +114,13 @@ export function Explore({ metrics, periodMetrics, onNavigate }: Props) {
         fmt={fmtSharpe}
         colored
       />
+
+      <div className="page-header" style={{ marginTop: '2rem' }}>
+        <h2>Risk-Adjusted Returns</h2>
+        <p className="page-subtitle">Since-inception metrics using daily excess returns over the RBA Cash Rate Target. Sorted by Sharpe ratio, highest to lowest.</p>
+      </div>
+
+      <RiskTable tickers={tickersByRisk} riskMetrics={riskMetrics} />
     </div>
   );
 }

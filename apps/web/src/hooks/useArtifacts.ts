@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { MetricRow, PeriodMetricRow } from '../types/contracts';
+import type { MetricRow, PeriodMetricRow, RiskMetricRow, RiskMetricsArtifact } from '../types/contracts';
 
 export interface ArtifactsState {
   metrics: MetricRow[];
@@ -35,6 +35,21 @@ export function usePeriodMetrics(): PeriodMetricRow[] {
 }
 
 export function findPeriodMetric(rows: PeriodMetricRow[], ticker: string): PeriodMetricRow | undefined {
+  return rows.find(r => r.ticker === ticker);
+}
+
+export function useRiskMetrics(): RiskMetricRow[] {
+  const [rows, setRows] = useState<RiskMetricRow[]>([]);
+  useEffect(() => {
+    fetch(`${import.meta.env.BASE_URL}data/risk_metrics.json`)
+      .then(r => r.ok ? r.json() : null)
+      .then((d: RiskMetricsArtifact | null) => { if (d?.tickers?.length) setRows(d.tickers); })
+      .catch(() => {});
+  }, []);
+  return rows;
+}
+
+export function findRiskMetric(rows: RiskMetricRow[], ticker: string): RiskMetricRow | undefined {
   return rows.find(r => r.ticker === ticker);
 }
 

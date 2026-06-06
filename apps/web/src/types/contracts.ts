@@ -31,6 +31,29 @@ export type PeriodMetricRow = {
   sharpe_1y:  number | null; sharpe_3y:  number | null; sharpe_5y:  number | null; sharpe_10y: number | null;
 };
 
+export type RiskMetricRow = {
+  ticker: string;
+  observation_start: string;
+  observation_end: string;
+  observation_days: number;
+  cagr_since_inception: number | null;
+  max_drawdown: number | null;
+  ulcer_index: number | null;
+  sharpe_raw: number | null;
+  sharpe_annualised: number | null;
+  sortino: number | null;
+  calmar: number | null;
+  rolling_sharpe_36m_avg: number | null;
+  rolling_sharpe_36m_median: number | null;
+  rolling_sharpe_60m_avg: number | null;
+  rolling_sharpe_60m_median: number | null;
+};
+
+export type RiskMetricsArtifact = {
+  metadata: Record<string, string>;
+  tickers: RiskMetricRow[];
+};
+
 export type CorrelationPayload = {
   tickers: string[];
   matrix: number[][];
