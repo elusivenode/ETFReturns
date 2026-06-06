@@ -182,7 +182,7 @@ export function Dashboard({ metrics, periodMetrics, onNavigate }: Props) {
               <th>ETF</th>
               <th>Asset Class</th>
               <th>Allocation</th>
-              <th>$ Invested</th>
+              <th>Invested</th>
               <th>Est. Yield</th>
               <th>Income Contribution</th>
             </tr>
