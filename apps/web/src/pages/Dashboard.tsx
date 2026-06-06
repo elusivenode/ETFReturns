@@ -182,6 +182,7 @@ export function Dashboard({ metrics, periodMetrics, onNavigate }: Props) {
               <th>ETF</th>
               <th>Asset Class</th>
               <th>Allocation</th>
+              <th>$ Invested</th>
               <th>Est. Yield</th>
               <th>Income Contribution</th>
             </tr>
@@ -191,7 +192,8 @@ export function Dashboard({ metrics, periodMetrics, onNavigate }: Props) {
               .sort((a, b) => b.weight - a.weight)
               .map(a => {
                 const y = resolveYield(a.ticker, metrics, cashYield);
-                const income = (a.weight / 100) * (y / 100) * totalValue;
+                const invested = (a.weight / 100) * totalValue;
+                const income = (invested / 100) * y;
                 const cls = findAssetClass(a.ticker);
                 return (
                   <tr key={a.ticker}>
@@ -201,6 +203,7 @@ export function Dashboard({ metrics, periodMetrics, onNavigate }: Props) {
                     </td>
                     <td>{cls?.name ?? '—'}</td>
                     <td>{fmtPct(a.weight)}</td>
+                    <td>{fmtCurrency(invested)}</td>
                     <td>{y.toFixed(1)}%</td>
                     <td>{fmtCurrency(income)}</td>
                   </tr>
@@ -211,6 +214,7 @@ export function Dashboard({ metrics, periodMetrics, onNavigate }: Props) {
             <tr>
               <td colSpan={2}><strong>Total</strong></td>
               <td><strong>{totalAllocated}%</strong></td>
+              <td><strong>{fmtCurrency(totalValue)}</strong></td>
               <td><strong>{weightedYield.toFixed(2)}%</strong></td>
               <td><strong>{fmtCurrency(annualIncome)}</strong></td>
             </tr>
