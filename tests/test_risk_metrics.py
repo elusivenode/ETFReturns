@@ -13,15 +13,15 @@ import pandas as pd
 import pytest
 
 from etf_analytics.analytics.risk_free import (
+    TRADING_DAYS_PER_YEAR,
     ConstantRateSource,
     RiskFreeSource,
-    TRADING_DAYS_PER_YEAR,
 )
 from etf_analytics.analytics.risk_metrics import (
     _ann_vol,
-    _calmar,
     _cagr,
     _cagr_since_inception,
+    _calmar,
     _max_drawdown,
     _rolling_sharpe_stats,
     _sharpe,
@@ -29,7 +29,6 @@ from etf_analytics.analytics.risk_metrics import (
     _ulcer_index,
     compute_risk_metrics,
 )
-
 
 # ── Fixtures ─────────────────────────────────────────────────────────────────
 
