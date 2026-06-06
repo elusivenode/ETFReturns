@@ -9,6 +9,7 @@ import { PortfolioBuilder } from './pages/PortfolioBuilder';
 import { Insights } from './pages/Insights';
 import { Compare } from './pages/Compare';
 import { Backtest } from './pages/Backtest';
+import { Glossary } from './pages/Glossary';
 
 function AppInner() {
   const [page, setPage] = useState<Page>('dashboard');
@@ -25,8 +26,9 @@ function AppInner() {
         {page === 'analytics' && <Analytics periodMetrics={periodMetrics} riskMetrics={riskMetrics} />}
         {page === 'portfolio' && <PortfolioBuilder metrics={metrics} onNavigate={setPage} />}
         {page === 'insights'  && <Insights  metrics={metrics} onNavigate={setPage} />}
-        {page === 'compare'   && <Compare />}
+        {page === 'compare'   && <Compare periodMetrics={periodMetrics} />}
         {page === 'backtest'  && <Backtest />}
+        {page === 'glossary'  && <Glossary />}
       </main>
     </>
   );

@@ -2,22 +2,84 @@ import { useMemo, useState } from 'react';
 import Plot from 'react-plotly.js';
 import { ASSET_CLASSES } from '../data/assetClasses';
 import { usePriceSeries, computeCumReturn } from '../hooks/usePriceSeries';
-import { useCpiSeries } from '../hooks/useArtifacts';
+import { useCpiSeries, findPeriodMetric } from '../hooks/useArtifacts';
 import type { CpiDateValues } from '../hooks/useArtifacts';
+import type { PeriodMetricRow } from '../types/contracts';
 
-// All ETFs grouped by asset class (excluding the Cash bucket which has no price data)
 const ETF_GROUPS = ASSET_CLASSES
   .filter(c => c.etfs.length > 0)
   .map(c => ({ id: c.id, name: c.name, tickers: c.etfs.map(e => e.ticker) }));
 
 const ALL_ETF_TICKERS = ETF_GROUPS.flatMap(g => g.tickers);
 
-// Distinctive color palette — one per ETF slot
 const PALETTE = [
   '#0a6e4f', '#1a56b0', '#b91c1c', '#b8860b', '#7b3c8f',
   '#0891b2', '#059669', '#d97706', '#6366f1', '#db2777',
   '#0f766e', '#92400e', '#1d4ed8', '#65a30d',
 ];
+
+const SIDEBAR_PERIODS = ['1y', '3y', '5y', '10y'] as const;
+type SidebarPeriod = typeof SIDEBAR_PERIODS[number];
+const SIDEBAR_LABELS: Record<SidebarPeriod, string> = {
+  '1y': '1Y', '3y': '3Y', '5y': '5Y', '10y': '10Y',
+};
+
+function fmt1(v: number | null | undefined, pct = true): string {
+  if (v == null) return 'n/a';
+  return pct ? `${(v * 100).toFixed(1)}%` : v.toFixed(2);
+}
+
+function numCls(v: number | null | undefined): string {
+  if (v == null) return '';
+  return v >= 0 ? 'perf-pos' : 'perf-neg';
+}
+
+function MiniTable({
+  title, selected, periodMetrics, field, pct, colored, palette,
+}: {
+  title: string;
+  selected: string[];
+  periodMetrics: PeriodMetricRow[];
+  field: 'ret' | 'vol' | 'sharpe';
+  pct: boolean;
+  colored: boolean;
+  palette: string[];
+}) {
+  return (
+    <div className="cmp-mini-table">
+      <div className="cmp-mini-title">{title}</div>
+      <table>
+        <thead>
+          <tr>
+            <th>ETF</th>
+            {SIDEBAR_PERIODS.map(p => <th key={p}>{SIDEBAR_LABELS[p]}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {selected.map((ticker, i) => {
+            const row = findPeriodMetric(periodMetrics, ticker);
+            return (
+              <tr key={ticker}>
+                <td>
+                  <span className="cmp-mini-swatch" style={{ background: palette[i % palette.length] }} />
+                  {ticker.replace('.AX', '')}
+                </td>
+                {SIDEBAR_PERIODS.map(p => {
+                  const val = (row?.[`${field}_${p}` as keyof PeriodMetricRow] ?? null) as number | null;
+                  return (
+                    <td key={p} className={colored ? numCls(val) : ''}>
+                      {fmt1(val, pct)}
+                    </td>
+                  );
+                })}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
 
 function computeCpiCumReturn(
   cpi: CpiDateValues,
@@ -27,44 +89,41 @@ function computeCpiCumReturn(
   if (idx === -1) return null;
   const base = cpi.values[idx];
   if (!base || base <= 0) return null;
-  const x = cpi.dates.slice(idx);
-  const y = cpi.values.slice(idx).map(v => (v / base - 1) * 100);
-  return { x, y };
+  return {
+    x: cpi.dates.slice(idx),
+    y: cpi.values.slice(idx).map(v => (v / base - 1) * 100),
+  };
 }
 
-// Five-years-ago default start date
 function defaultStartDate(): string {
   const d = new Date();
   d.setFullYear(d.getFullYear() - 5);
   return d.toISOString().slice(0, 10);
 }
 
-export function Compare() {
+interface Props {
+  periodMetrics: PeriodMetricRow[];
+}
+
+export function Compare({ periodMetrics }: Props) {
   const { series, loaded, error } = usePriceSeries();
   const cpiSeries = useCpiSeries();
 
-  const [selected, setSelected]     = useState<string[]>([]);
-  const [startDate, setStartDate]   = useState(defaultStartDate);
+  const [selected, setSelected]   = useState<string[]>([]);
+  const [startDate, setStartDate] = useState(defaultStartDate);
 
-  const toggle = (ticker: string) =>
-    setSelected(s =>
-      s.includes(ticker) ? s.filter(t => t !== ticker) : [...s, ticker],
-    );
+  const toggle    = (ticker: string) =>
+    setSelected(s => s.includes(ticker) ? s.filter(t => t !== ticker) : [...s, ticker]);
+  const selectAll = () => setSelected(ALL_ETF_TICKERS.filter(t => series[t]));
+  const clearAll  = () => setSelected([]);
 
-  const selectAll  = () => setSelected(ALL_ETF_TICKERS.filter(t => series[t]));
-  const clearAll   = () => setSelected([]);
-
-  // Build Plotly traces — memoised so they only recompute when inputs change
   const { traces, noDataTickers } = useMemo(() => {
     const traces: Plotly.Data[] = [];
     const noData: string[] = [];
 
     selected.forEach((ticker, i) => {
       const result = computeCumReturn(ticker, series, startDate);
-      if (!result) {
-        noData.push(ticker.replace('.AX', ''));
-        return;
-      }
+      if (!result) { noData.push(ticker.replace('.AX', '')); return; }
       traces.push({
         name: ticker.replace('.AX', ''),
         x: result.x,
@@ -94,13 +153,12 @@ export function Compare() {
     return { traces, noDataTickers: noData };
   }, [selected, series, startDate, cpiSeries]);
 
-  // Earliest date that has data for at least one selected ticker
   const minDate = useMemo(() => {
-    const firsts = ALL_ETF_TICKERS
-      .map(t => series[t]?.dates[0])
-      .filter(Boolean) as string[];
+    const firsts = ALL_ETF_TICKERS.map(t => series[t]?.dates[0]).filter(Boolean) as string[];
     return firsts.length ? firsts.sort()[0] : '2000-01-01';
   }, [series]);
+
+  const showSidebar = selected.length > 0 && traces.length > 0;
 
   return (
     <div className="page">
@@ -135,7 +193,6 @@ export function Compare() {
           </div>
         </div>
 
-        {/* ETF selector chips grouped by asset class */}
         {!loaded ? (
           <div className="compare-loading">Loading price data…</div>
         ) : error ? (
@@ -178,51 +235,74 @@ export function Compare() {
         )}
       </div>
 
-      {/* Chart */}
-      <div className="card">
-        {selected.length === 0 ? (
-          <div className="empty-chart" style={{ height: 320 }}>
-            Select ETFs above to start comparing returns.
+      {/* Chart + sidebar */}
+      <div className={showSidebar ? 'compare-bottom-row' : ''}>
+        <div className="card">
+          {selected.length === 0 ? (
+            <div className="empty-chart" style={{ height: 320 }}>
+              Select ETFs above to start comparing returns.
+            </div>
+          ) : traces.length === 0 ? (
+            <div className="empty-chart" style={{ height: 320 }}>
+              No data available for the selected ETFs from {startDate}.
+            </div>
+          ) : (
+            <Plot
+              data={traces}
+              layout={{
+                autosize: true,
+                margin: { t: 24, r: 24, b: 56, l: 64 },
+                paper_bgcolor: '#ffffff',
+                plot_bgcolor: '#ffffff',
+                xaxis: { type: 'date', showgrid: true, gridcolor: '#f0f4f8', zeroline: false },
+                yaxis: {
+                  title: { text: 'Cumulative Return (%)' },
+                  showgrid: true,
+                  gridcolor: '#f0f4f8',
+                  zeroline: true,
+                  zerolinecolor: '#6b7a8d',
+                  zerolinewidth: 1.5,
+                  ticksuffix: '%',
+                },
+                legend: { orientation: 'h', yanchor: 'bottom', y: -0.22, xanchor: 'center', x: 0.5 },
+                hovermode: 'x unified',
+              }}
+              config={{ displayModeBar: false, responsive: true }}
+              style={{ width: '100%', height: '420px' }}
+            />
+          )}
+        </div>
+
+        {showSidebar && (
+          <div className="card cmp-sidebar">
+            <MiniTable
+              title="Returns"
+              selected={selected}
+              periodMetrics={periodMetrics}
+              field="ret"
+              pct
+              colored
+              palette={PALETTE}
+            />
+            <MiniTable
+              title="Volatility (annualised)"
+              selected={selected}
+              periodMetrics={periodMetrics}
+              field="vol"
+              pct
+              colored={false}
+              palette={PALETTE}
+            />
+            <MiniTable
+              title="Sharpe Ratio"
+              selected={selected}
+              periodMetrics={periodMetrics}
+              field="sharpe"
+              pct={false}
+              colored
+              palette={PALETTE}
+            />
           </div>
-        ) : traces.length === 0 ? (
-          <div className="empty-chart" style={{ height: 320 }}>
-            No data available for the selected ETFs from {startDate}.
-          </div>
-        ) : (
-          <Plot
-            data={traces}
-            layout={{
-              autosize: true,
-              margin: { t: 24, r: 24, b: 56, l: 64 },
-              paper_bgcolor: '#ffffff',
-              plot_bgcolor: '#ffffff',
-              xaxis: {
-                type: 'date',
-                showgrid: true,
-                gridcolor: '#f0f4f8',
-                zeroline: false,
-              },
-              yaxis: {
-                title: { text: 'Cumulative Return (%)' },
-                showgrid: true,
-                gridcolor: '#f0f4f8',
-                zeroline: true,
-                zerolinecolor: '#6b7a8d',
-                zerolinewidth: 1.5,
-                ticksuffix: '%',
-              },
-              legend: {
-                orientation: 'h',
-                yanchor: 'bottom',
-                y: -0.22,
-                xanchor: 'center',
-                x: 0.5,
-              },
-              hovermode: 'x unified',
-            }}
-            config={{ displayModeBar: false, responsive: true }}
-            style={{ width: '100%', height: '440px' }}
-          />
         )}
       </div>
     </div>

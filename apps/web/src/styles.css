@@ -1292,6 +1292,77 @@ th {
   padding: 8px 12px;
 }
 
+.compare-bottom-row {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 16px;
+  align-items: start;
+}
+
+.cmp-sidebar {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-height: 520px;
+  overflow-y: auto;
+}
+
+.cmp-mini-table {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cmp-mini-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.cmp-mini-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+}
+
+.cmp-mini-table th,
+.cmp-mini-table td {
+  padding: 3px 5px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.cmp-mini-table th:first-child,
+.cmp-mini-table td:first-child {
+  text-align: left;
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cmp-mini-table th {
+  color: var(--text-muted);
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+}
+
+.cmp-mini-table tbody tr:nth-child(even) {
+  background: var(--surface-alt);
+}
+
+.cmp-mini-swatch {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 5px;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
 /* ── Backtest page ───────────────────────────────────────────────────────── */
 
 .backtest-status-grid {
@@ -1386,4 +1457,64 @@ th {
   .member-cols { grid-template-columns: 1fr; }
 
   .backtest-status-grid { grid-template-columns: 1fr; }
+
+  .compare-bottom-row { grid-template-columns: 1fr; }
+  .cmp-sidebar { max-height: none; }
+}
+
+/* ── Glossary page ───────────────────────────────────────────────────────── */
+
+.glossary-section {
+  padding: 20px 24px;
+  margin-bottom: 16px;
+}
+
+.glossary-heading {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-heading);
+  margin: 0 0 14px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.glossary-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0;
+}
+
+.glossary-entry {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 12px 20px;
+  align-items: start;
+}
+
+.glossary-term {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--green-700);
+  line-height: 1.4;
+}
+
+.glossary-def {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.glossary-note {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+@media (max-width: 640px) {
+  .glossary-entry { grid-template-columns: 1fr; gap: 4px; }
 }
