@@ -75,11 +75,47 @@ def write_period_metrics(path: Path, period_df: pd.DataFrame) -> None:
     _write_json(path, records)
 
 
-def write_cpi_series(path: Path, cpi_df: pd.DataFrame) -> None:
-    """Export rolling 3Y CPI series as {dates, values} for the Backtest chart."""
+def write_risk_metrics(path: Path, metrics_df: pd.DataFrame, metadata: dict) -> None:
+    """Export risk metrics artifact with embedded metadata.
+
+    Format:
+        { "metadata": {...assumptions...}, "tickers": [{...per-ticker rows...}] }
+
+    All float NaN/Inf are converted to null so the JSON is browser-safe.
+    """
+    records = [_sanitize_record(row) for row in metrics_df.to_dict(orient="records")]
+    _write_json(path, {"metadata": metadata, "tickers": records})
+
+
+def write_cpi_series(
+    path: Path,
+    raw_df: pd.DataFrame,
+    rolling_df: pd.DataFrame,
+) -> None:
+    """Export CPI artifact with two series for different chart uses.
+
+    Args:
+        raw_df:     Quarterly CPI index levels (``date``, ``cpi`` columns).
+                    Used by the Compare chart to compute cumulative inflation return.
+        rolling_df: Rolling 3Y annualised CPI (``date``, ``cpi_3y`` columns).
+                    Used by the Backtest chart as a reference line.
+
+    Output format::
+
+        {
+          "quarterly_index": {"dates": [...], "values": [...]},
+          "rolling_3y":      {"dates": [...], "values": [...]}
+        }
+    """
     _write_json(path, {
-        "dates": [d.strftime("%Y-%m-%d") for d in pd.to_datetime(cpi_df["date"])],
-        "values": list(cpi_df["cpi_3y"]),
+        "quarterly_index": {
+            "dates":  [d.strftime("%Y-%m-%d") for d in pd.to_datetime(raw_df["date"])],
+            "values": [round(float(v), 4) for v in raw_df["cpi"]],
+        },
+        "rolling_3y": {
+            "dates":  [d.strftime("%Y-%m-%d") for d in pd.to_datetime(rolling_df["date"])],
+            "values": [round(float(v), 6) for v in rolling_df["cpi_3y"]],
+        },
     })
 
 

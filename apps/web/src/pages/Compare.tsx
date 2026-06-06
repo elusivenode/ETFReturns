@@ -2,6 +2,8 @@ import { useMemo, useState } from 'react';
 import Plot from 'react-plotly.js';
 import { ASSET_CLASSES } from '../data/assetClasses';
 import { usePriceSeries, computeCumReturn } from '../hooks/usePriceSeries';
+import { useCpiSeries } from '../hooks/useArtifacts';
+import type { CpiDateValues } from '../hooks/useArtifacts';
 
 // All ETFs grouped by asset class (excluding the Cash bucket which has no price data)
 const ETF_GROUPS = ASSET_CLASSES
@@ -17,6 +19,19 @@ const PALETTE = [
   '#0f766e', '#92400e', '#1d4ed8', '#65a30d',
 ];
 
+function computeCpiCumReturn(
+  cpi: CpiDateValues,
+  startDate: string,
+): { x: string[]; y: number[] } | null {
+  const idx = cpi.dates.findIndex(d => d >= startDate);
+  if (idx === -1) return null;
+  const base = cpi.values[idx];
+  if (!base || base <= 0) return null;
+  const x = cpi.dates.slice(idx);
+  const y = cpi.values.slice(idx).map(v => (v / base - 1) * 100);
+  return { x, y };
+}
+
 // Five-years-ago default start date
 function defaultStartDate(): string {
   const d = new Date();
@@ -26,6 +41,7 @@ function defaultStartDate(): string {
 
 export function Compare() {
   const { series, loaded, error } = usePriceSeries();
+  const cpiSeries = useCpiSeries();
 
   const [selected, setSelected]     = useState<string[]>([]);
   const [startDate, setStartDate]   = useState(defaultStartDate);
@@ -60,8 +76,23 @@ export function Compare() {
       });
     });
 
+    if (cpiSeries) {
+      const cpiResult = computeCpiCumReturn(cpiSeries.quarterly_index, startDate);
+      if (cpiResult) {
+        traces.push({
+          name: 'CPI (inflation)',
+          x: cpiResult.x,
+          y: cpiResult.y,
+          type: 'scatter',
+          mode: 'lines',
+          line: { width: 1.5, dash: 'dot', color: '#9b59b6' },
+          hovertemplate: 'CPI: %{y:.2f}%<extra></extra>',
+        });
+      }
+    }
+
     return { traces, noDataTickers: noData };
-  }, [selected, series, startDate]);
+  }, [selected, series, startDate, cpiSeries]);
 
   // Earliest date that has data for at least one selected ticker
   const minDate = useMemo(() => {

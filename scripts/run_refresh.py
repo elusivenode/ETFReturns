@@ -4,11 +4,14 @@ from pathlib import Path
 
 from etf_analytics.analytics.cpi import compute_rolling_cpi_3y
 from etf_analytics.analytics.metrics import calc_summary_metrics, compute_period_metrics
+from etf_analytics.analytics.risk_free import RBACashRateSource
+from etf_analytics.analytics.risk_metrics import compute_risk_metrics
 from etf_analytics.export.artifacts import (
     write_cpi_series,
     write_metrics,
     write_period_metrics,
     write_price_series,
+    write_risk_metrics,
 )
 from etf_analytics.ingestion.abs_client import fetch_cpi_quarterly
 from etf_analytics.ingestion.watchlist import load_watchlist
@@ -21,6 +24,8 @@ from etf_analytics.settings import (
     ARTIFACT_DIR,
     CPI_ARTIFACT_PATH,
     OVERRIDES_PATH,
+    RF_FALLBACK_RATE,
+    RISK_METRICS_PATH,
     SCHEMA_PATH,
     SQLITE_PATH,
     WATCHLIST_PATH,
@@ -77,14 +82,24 @@ def build_artifacts(tickers: list[str], artifact_dir: Path = ARTIFACT_DIR) -> No
     write_metrics(artifact_dir / "metrics.json", metrics_df)
     write_period_metrics(artifact_dir / "period_metrics.json", period_df)
     write_price_series(artifact_dir / "price_series.json", price_df)
+    build_risk_metrics(price_df)
+
+
+def build_risk_metrics(price_df: object) -> None:
+    rf = RBACashRateSource(fallback_annual=RF_FALLBACK_RATE)
+    metrics_df, metadata = compute_risk_metrics(price_df, rf)
+    if rf.fetch_failed:
+        print(f"WARNING: RBA cash rate fetch failed ({rf.fetch_error}); used {rf.name}")
+    write_risk_metrics(RISK_METRICS_PATH, metrics_df, metadata)
+    print(f"Wrote risk metrics ({len(metrics_df)} tickers) to {RISK_METRICS_PATH}")
 
 
 def build_cpi_artifact() -> None:
     try:
         cpi_df = fetch_cpi_quarterly()
         rolling_df = compute_rolling_cpi_3y(cpi_df)
-        write_cpi_series(CPI_ARTIFACT_PATH, rolling_df)
-        print(f"Wrote CPI series ({len(rolling_df)} quarters) to {CPI_ARTIFACT_PATH}")
+        write_cpi_series(CPI_ARTIFACT_PATH, cpi_df, rolling_df)
+        print(f"Wrote CPI series ({len(rolling_df)} rolling quarters) to {CPI_ARTIFACT_PATH}")
     except Exception as exc:  # noqa: BLE001
         print(f"WARNING: CPI fetch failed, skipping cpi_series.json: {exc}")
 

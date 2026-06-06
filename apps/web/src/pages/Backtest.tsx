@@ -288,8 +288,8 @@ export function Backtest() {
   const cpiTrace: Plotly.Data | null = cpiSeries
     ? {
         name: 'CPI (3Y p.a.)',
-        x: cpiSeries.dates,
-        y: cpiSeries.values.map(v => v * 100),
+        x: cpiSeries.rolling_3y.dates,
+        y: cpiSeries.rolling_3y.values.map(v => v * 100),
         type: 'scatter',
         mode: 'lines',
         line: { width: 1.5, dash: 'dot', color: '#9b59b6' },

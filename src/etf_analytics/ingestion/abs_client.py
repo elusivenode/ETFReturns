@@ -39,12 +39,12 @@ def fetch_cpi_quarterly() -> pd.DataFrame:
     with urllib.request.urlopen(req, timeout=30) as resp:
         payload = json.loads(resp.read().decode())
 
-    structure = payload["data"]["structure"]
+    structure = payload["structure"]
     obs_dims = structure["dimensions"]["observation"]
     time_dim = next(d for d in obs_dims if d["id"] == "TIME_PERIOD")
     period_values = [v["id"] for v in time_dim["values"]]
 
-    datasets = payload["data"]["dataSets"]
+    datasets = payload["dataSets"]
     series_map = datasets[0]["series"]
     # There should be exactly one series key for this specific query
     series_key = next(iter(series_map))
