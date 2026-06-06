@@ -324,10 +324,16 @@ export function Backtest() {
       hovertemplate: `<b>${r.member}</b><br>%{x}<br>3Y volatility: %{y:.2f}%<extra></extra>`,
     })) as Plotly.Data[];
 
-  const latestDate = results
+  const memberDates = results
+    .filter(r => r.points.length > 0)
     .flatMap(r => r.points.map(p => p.date))
     .sort();
-  const latestDateValue = latestDate.length > 0 ? latestDate[latestDate.length - 1] : undefined;
+  const sharedStart = memberDates[0];
+  const sharedEnd   = memberDates[memberDates.length - 1];
+  const xRange: [string, string] | undefined =
+    sharedStart && sharedEnd ? [sharedStart, sharedEnd] : undefined;
+
+  const latestDateValue = sharedEnd;
 
   return (
     <div className="page">
@@ -405,6 +411,7 @@ export function Backtest() {
                     showgrid: true,
                     gridcolor: '#f0f4f8',
                     zeroline: false,
+                    ...(xRange ? { range: xRange } : {}),
                   },
                   yaxis: {
                     title: { text: 'Rolling 3Y Return (% p.a.)' },
@@ -445,6 +452,7 @@ export function Backtest() {
                     showgrid: true,
                     gridcolor: '#f0f4f8',
                     zeroline: false,
+                    ...(xRange ? { range: xRange } : {}),
                   },
                   yaxis: {
                     title: { text: 'Rolling 3Y Volatility (% p.a.)' },
