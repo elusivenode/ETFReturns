@@ -60,6 +60,23 @@ def _scrub_price_outliers(series: pd.Series, max_daily_move: float = 0.5) -> pd.
     return prices
 
 
+def scrub_price_df(price_df: pd.DataFrame) -> pd.DataFrame:
+    """Apply _scrub_price_outliers to each ticker's adj_close in-place.
+
+    Returns a copy with spike-and-revert bad prices replaced by linear
+    interpolation.  Should be called once, before any analytics or artifact
+    writes, so every consumer sees clean prices.
+    """
+    df = price_df.copy()
+    df["date"] = pd.to_datetime(df["date"])
+    cleaned_parts = []
+    for ticker, grp in df.groupby("ticker", sort=False):
+        grp = grp.sort_values("date").copy()
+        grp["adj_close"] = _scrub_price_outliers(grp["adj_close"])
+        cleaned_parts.append(grp)
+    return pd.concat(cleaned_parts).sort_values(["ticker", "date"]).reset_index(drop=True)
+
+
 def _sanitize_record(row: dict) -> dict:
     """Replace float NaN/Inf with None so json.dump produces valid JSON."""
     import math

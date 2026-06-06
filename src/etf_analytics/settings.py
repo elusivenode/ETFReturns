@@ -24,6 +24,7 @@ SQLITE_PATH = DATA_DIR / "sqlite" / "etf_cache.db"
 WATCHLIST_PATH = PROJECT_ROOT / "config" / "watchlist.yml"
 SCHEMA_PATH = PROJECT_ROOT / "sql" / "schema.sql"
 OVERRIDES_PATH = DATA_DIR / "price_overrides.csv"
+START_DATES_PATH = DATA_DIR / "ticker_start_dates.csv"
 CPI_ARTIFACT_PATH = ARTIFACT_DIR / "cpi_series.json"
 RISK_METRICS_PATH = ARTIFACT_DIR / "risk_metrics.json"
 RF_FALLBACK_RATE = 0.045  # used when RBA fetch fails; update here only

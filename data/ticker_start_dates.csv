@@ -1,0 +1,2 @@
+ticker,start_date,reason
+IVV.AX,2011-01-05,yfinance adj_close has a permanent scale break on 2011-01-04 (-93% single day); pre-2011 prices are in a ~100x different basis than the current series. Drop pre-break data to avoid a spurious max drawdown.

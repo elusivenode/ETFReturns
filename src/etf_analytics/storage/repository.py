@@ -122,6 +122,25 @@ def apply_price_overrides(price_df: pd.DataFrame, overrides_path: Path) -> pd.Da
     return df
 
 
+def apply_start_date_filters(price_df: pd.DataFrame, start_dates_path: Path) -> pd.DataFrame:
+    """Drop rows before a per-ticker start date defined in data/ticker_start_dates.csv.
+
+    The CSV must have columns: ticker, start_date, reason.
+    Used to remove pre-listing synthetic price history from yfinance.
+    """
+    if not start_dates_path.exists():
+        return price_df
+    cfg = pd.read_csv(start_dates_path, parse_dates=["start_date"])
+    if cfg.empty:
+        return price_df
+    df = price_df.copy()
+    df["date"] = pd.to_datetime(df["date"])
+    for _, row in cfg.iterrows():
+        mask = (df["ticker"] == row["ticker"]) & (df["date"] < row["start_date"])
+        df = df[~mask]
+    return df.reset_index(drop=True)
+
+
 def load_dividends(conn: sqlite3.Connection, tickers: list[str]) -> pd.DataFrame:
     placeholders = ",".join("?" for _ in tickers)
     query = f"""

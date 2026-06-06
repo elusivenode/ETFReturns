@@ -7,6 +7,7 @@ from etf_analytics.analytics.metrics import calc_summary_metrics, compute_period
 from etf_analytics.analytics.risk_free import RBACashRateSource
 from etf_analytics.analytics.risk_metrics import compute_risk_metrics
 from etf_analytics.export.artifacts import (
+    scrub_price_df,
     write_cpi_series,
     write_metrics,
     write_period_metrics,
@@ -28,11 +29,13 @@ from etf_analytics.settings import (
     RISK_METRICS_PATH,
     SCHEMA_PATH,
     SQLITE_PATH,
+    START_DATES_PATH,
     WATCHLIST_PATH,
 )
 from etf_analytics.storage.db import connect, init_db
 from etf_analytics.storage.repository import (
     apply_price_overrides,
+    apply_start_date_filters,
     get_last_dividend_date,
     get_last_price_date,
     load_dividends,
@@ -76,6 +79,8 @@ def build_artifacts(tickers: list[str], artifact_dir: Path = ARTIFACT_DIR) -> No
         conn.close()
 
     price_df = apply_price_overrides(price_df, OVERRIDES_PATH)
+    price_df = apply_start_date_filters(price_df, START_DATES_PATH)
+    price_df = scrub_price_df(price_df)
     metrics_df = calc_summary_metrics(price_df, dividend_df)
     period_df = compute_period_metrics(price_df)
 
