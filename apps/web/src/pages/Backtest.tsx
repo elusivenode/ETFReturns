@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import Plot from 'react-plotly.js';
 import { usePortfolio } from '../context/PortfolioContext';
 import { usePriceSeries } from '../hooks/usePriceSeries';
+import { useCpiSeries } from '../hooks/useArtifacts';
 import type { MemberPortfolio, PriceSeriesArtifact } from '../types/contracts';
 
 const TRADING_DAYS_PER_YEAR = 252;
@@ -277,23 +278,39 @@ function latestLabel(points: RollingPoint[]): string {
 export function Backtest() {
   const { portfolio } = usePortfolio();
   const { series, loaded, error } = usePriceSeries();
+  const cpiSeries = useCpiSeries();
 
   const results = useMemo(() => {
     if (!loaded || error) return [];
     return portfolio.members.map(m => buildRollingSeries(m, series, portfolio.cashYield));
   }, [portfolio.members, portfolio.cashYield, series, loaded, error]);
 
-  const returnTraces = results
-    .filter(r => r.points.length > 0)
-    .map((r, i) => ({
-      name: r.member,
-      x: r.points.map(p => p.date),
-      y: r.points.map(p => p.return3y * 100),
-      type: 'scatter',
-      mode: 'lines',
-      line: { width: 2.2, color: i === 0 ? '#0a6e4f' : '#1a56b0' },
-      hovertemplate: `<b>${r.member}</b><br>%{x}<br>3Y return: %{y:.2f}%<extra></extra>`,
-    })) as Plotly.Data[];
+  const cpiTrace: Plotly.Data | null = cpiSeries
+    ? {
+        name: 'CPI (3Y p.a.)',
+        x: cpiSeries.dates,
+        y: cpiSeries.values.map(v => v * 100),
+        type: 'scatter',
+        mode: 'lines',
+        line: { width: 1.5, dash: 'dot', color: '#9b59b6' },
+        hovertemplate: 'CPI 3Y p.a.: %{y:.2f}%<extra></extra>',
+      }
+    : null;
+
+  const returnTraces = [
+    ...results
+      .filter(r => r.points.length > 0)
+      .map((r, i) => ({
+        name: r.member,
+        x: r.points.map(p => p.date),
+        y: r.points.map(p => p.return3y * 100),
+        type: 'scatter',
+        mode: 'lines',
+        line: { width: 2.2, color: i === 0 ? '#0a6e4f' : '#1a56b0' },
+        hovertemplate: `<b>${r.member}</b><br>%{x}<br>3Y return: %{y:.2f}%<extra></extra>`,
+      })),
+    ...(cpiTrace ? [cpiTrace] : []),
+  ] as Plotly.Data[];
 
   const volTraces = results
     .filter(r => r.points.length > 0)

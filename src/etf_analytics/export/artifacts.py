@@ -60,9 +60,27 @@ def _scrub_price_outliers(series: pd.Series, max_daily_move: float = 0.5) -> pd.
     return prices
 
 
+def _sanitize_record(row: dict) -> dict:
+    """Replace float NaN/Inf with None so json.dump produces valid JSON."""
+    import math
+    return {
+        k: (None if isinstance(v, float) and not math.isfinite(v) else v)
+        for k, v in row.items()
+    }
+
+
 def write_period_metrics(path: Path, period_df: pd.DataFrame) -> None:
     """Export per-ticker period return/vol/sharpe to period_metrics.json."""
-    _write_json(path, period_df.where(pd.notna(period_df), None).to_dict(orient="records"))
+    records = [_sanitize_record(row) for row in period_df.to_dict(orient="records")]
+    _write_json(path, records)
+
+
+def write_cpi_series(path: Path, cpi_df: pd.DataFrame) -> None:
+    """Export rolling 3Y CPI series as {dates, values} for the Backtest chart."""
+    _write_json(path, {
+        "dates": [d.strftime("%Y-%m-%d") for d in pd.to_datetime(cpi_df["date"])],
+        "values": list(cpi_df["cpi_3y"]),
+    })
 
 
 def write_price_series(path: Path, price_df: pd.DataFrame) -> None:

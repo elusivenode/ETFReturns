@@ -37,3 +37,19 @@ export function usePeriodMetrics(): PeriodMetricRow[] {
 export function findPeriodMetric(rows: PeriodMetricRow[], ticker: string): PeriodMetricRow | undefined {
   return rows.find(r => r.ticker === ticker);
 }
+
+export interface CpiSeries {
+  dates: string[];
+  values: number[];
+}
+
+export function useCpiSeries(): CpiSeries | null {
+  const [data, setData] = useState<CpiSeries | null>(null);
+  useEffect(() => {
+    fetch(`${import.meta.env.BASE_URL}data/cpi_series.json`)
+      .then(r => r.ok ? r.json() : null)
+      .then((d: CpiSeries | null) => { if (d?.dates?.length) setData(d); })
+      .catch(() => {});
+  }, []);
+  return data;
+}

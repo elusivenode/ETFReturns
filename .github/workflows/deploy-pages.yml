@@ -37,6 +37,7 @@ jobs:
           cp data/artifacts/latest/metrics.json apps/web/public/data/
           cp data/artifacts/latest/period_metrics.json apps/web/public/data/
           cp data/artifacts/latest/price_series.json apps/web/public/data/
+          cp data/artifacts/latest/cpi_series.json apps/web/public/data/ || true
 
       - name: Build web app
         working-directory: apps/web
