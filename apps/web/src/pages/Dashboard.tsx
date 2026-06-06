@@ -42,6 +42,7 @@ export function Dashboard({ metrics, periodMetrics, onNavigate }: Props) {
   const totalValue = totalBalance;
   const active = allocations.filter(a => a.weight > 0);
   const totalAllocated = Math.round(active.reduce((s, a) => s + a.weight, 0));
+  const totalInvested = active.reduce((s, a) => s + (a.weight / 100) * totalValue, 0);
 
   if (active.length === 0) {
     return (
@@ -214,7 +215,7 @@ export function Dashboard({ metrics, periodMetrics, onNavigate }: Props) {
             <tr>
               <td colSpan={2}><strong>Total</strong></td>
               <td><strong>{totalAllocated}%</strong></td>
-              <td><strong>{fmtCurrency(totalValue)}</strong></td>
+              <td><strong>{fmtCurrency(totalInvested)}</strong></td>
               <td><strong>{weightedYield.toFixed(2)}%</strong></td>
               <td><strong>{fmtCurrency(annualIncome)}</strong></td>
             </tr>
