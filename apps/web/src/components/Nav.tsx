@@ -1,8 +1,9 @@
-export type Page = 'dashboard' | 'explore' | 'portfolio' | 'insights' | 'compare' | 'backtest';
+export type Page = 'dashboard' | 'explore' | 'analytics' | 'portfolio' | 'insights' | 'compare' | 'backtest';
 
 const LINKS: { page: Page; label: string }[] = [
   { page: 'dashboard', label: 'Dashboard' },
   { page: 'explore',   label: 'Explore' },
+  { page: 'analytics', label: 'Analytics' },
   { page: 'portfolio', label: 'Portfolio' },
   { page: 'insights',  label: 'Insights' },
   { page: 'compare',   label: 'Compare' },

@@ -367,6 +367,53 @@ button { cursor: pointer; font: inherit; }
 .perf-table-note { font-size: 0.78rem; color: var(--gray-500); margin: 0 0 0.75rem; }
 .perf-table-since { color: var(--gray-400); font-size: 0.82rem; }
 
+/* ── Analytics ───────────────────────────────────────────────────────────── */
+
+.analytics-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  margin: 1.5rem 0 0.75rem;
+  flex-wrap: wrap;
+}
+
+.analytics-sort-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.analytics-sort-label {
+  font-size: 0.8rem;
+  color: var(--slate-500);
+  white-space: nowrap;
+}
+
+.analytics-sort-select {
+  font-size: 0.82rem;
+  padding: 5px 10px;
+  border: 1px solid var(--slate-200);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--slate-700);
+  cursor: pointer;
+}
+
+.analytics-sort-dir {
+  font-size: 0.78rem;
+  padding: 5px 10px;
+  border: 1px solid var(--slate-200);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--slate-600);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.analytics-sort-dir:hover { background: var(--slate-50); }
+
 /* ── Explore ─────────────────────────────────────────────────────────────── */
 
 .asset-class-section { }

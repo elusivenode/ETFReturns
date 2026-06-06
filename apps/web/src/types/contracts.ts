@@ -33,6 +33,7 @@ export type PeriodMetricRow = {
 
 export type RiskMetricRow = {
   ticker: string;
+  rf_source: string;
   observation_start: string;
   observation_end: string;
   observation_days: number;
