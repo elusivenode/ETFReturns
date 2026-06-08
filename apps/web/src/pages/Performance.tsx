@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import Plot from 'react-plotly.js';
 import { usePerformanceArtifact } from '../hooks/useArtifacts';
 
 function fmtMoney(v: number | null | undefined): string {
@@ -106,6 +107,138 @@ export function Performance() {
                 </tbody>
               </table>
             </div>
+          </div>
+
+          <div className="card">
+            <h3>Portfolio Value</h3>
+            {artifact.valuation_series?.dates?.length ? (
+              <Plot
+                data={[
+                  {
+                    name: 'Portfolio Value',
+                    x: artifact.valuation_series.dates,
+                    y: artifact.valuation_series.values,
+                    type: 'scatter',
+                    mode: 'lines',
+                    line: { width: 2.2, color: '#0a6e4f' },
+                    hovertemplate: '%{x}<br>$%{y:,.0f}<extra></extra>',
+                  },
+                ]}
+                layout={{
+                  autosize: true,
+                  margin: { t: 16, r: 24, b: 56, l: 72 },
+                  paper_bgcolor: '#ffffff',
+                  plot_bgcolor: '#ffffff',
+                  xaxis: { type: 'date', showgrid: true, gridcolor: '#f0f4f8', zeroline: false },
+                  yaxis: { title: { text: 'Portfolio Value (AUD)' }, showgrid: true, gridcolor: '#f0f4f8' },
+                  hovermode: 'x unified',
+                }}
+                config={{ displayModeBar: false, responsive: true }}
+                style={{ width: '100%', height: '340px' }}
+              />
+            ) : (
+              <div className="empty-chart" style={{ height: 240 }}>
+                No valuation series available yet.
+              </div>
+            )}
+          </div>
+
+          <div className="card">
+            <h3>Portfolio Return vs CPI + 5%</h3>
+            {artifact.cumulative_return_series?.dates?.length ? (
+              <Plot
+                data={[
+                  {
+                    name: 'Portfolio',
+                    x: artifact.cumulative_return_series.dates,
+                    y: artifact.cumulative_return_series.portfolio,
+                    type: 'scatter',
+                    mode: 'lines',
+                    line: { width: 2.2, color: '#0a6e4f' },
+                    hovertemplate: 'Portfolio: %{y:.2f}%<extra></extra>',
+                  },
+                  {
+                    name: 'CPI + 5%',
+                    x: artifact.cumulative_return_series.dates,
+                    y: artifact.cumulative_return_series.benchmark,
+                    type: 'scatter',
+                    mode: 'lines',
+                    line: { width: 1.8, dash: 'dot', color: '#9b59b6' },
+                    hovertemplate: 'CPI + 5%: %{y:.2f}%<extra></extra>',
+                  },
+                ]}
+                layout={{
+                  autosize: true,
+                  margin: { t: 16, r: 24, b: 56, l: 68 },
+                  paper_bgcolor: '#ffffff',
+                  plot_bgcolor: '#ffffff',
+                  xaxis: { type: 'date', showgrid: true, gridcolor: '#f0f4f8', zeroline: false },
+                  yaxis: {
+                    title: { text: 'Cumulative Return (%)' },
+                    showgrid: true,
+                    gridcolor: '#f0f4f8',
+                    ticksuffix: '%',
+                  },
+                  legend: { orientation: 'h', yanchor: 'bottom', y: -0.22, xanchor: 'center', x: 0.5 },
+                  hovermode: 'x unified',
+                }}
+                config={{ displayModeBar: false, responsive: true }}
+                style={{ width: '100%', height: '340px' }}
+              />
+            ) : (
+              <div className="empty-chart" style={{ height: 240 }}>
+                No cumulative return series available yet.
+              </div>
+            )}
+          </div>
+
+          <div className="card">
+            <h3>Rolling 3Y Return vs CPI + 5%</h3>
+            {artifact.rolling_3y_return_series?.dates?.length ? (
+              <Plot
+                data={[
+                  {
+                    name: 'Portfolio 3Y p.a.',
+                    x: artifact.rolling_3y_return_series.dates,
+                    y: artifact.rolling_3y_return_series.portfolio_3y_pa,
+                    type: 'scatter',
+                    mode: 'lines',
+                    line: { width: 2.2, color: '#0a6e4f' },
+                    hovertemplate: 'Portfolio 3Y p.a.: %{y:.2f}%<extra></extra>',
+                  },
+                  {
+                    name: 'CPI + 5% 3Y p.a.',
+                    x: artifact.rolling_3y_return_series.dates,
+                    y: artifact.rolling_3y_return_series.benchmark_3y_pa,
+                    type: 'scatter',
+                    mode: 'lines',
+                    line: { width: 1.8, dash: 'dot', color: '#9b59b6' },
+                    hovertemplate: 'CPI + 5% 3Y p.a.: %{y:.2f}%<extra></extra>',
+                  },
+                ]}
+                layout={{
+                  autosize: true,
+                  margin: { t: 16, r: 24, b: 56, l: 68 },
+                  paper_bgcolor: '#ffffff',
+                  plot_bgcolor: '#ffffff',
+                  xaxis: { type: 'date', showgrid: true, gridcolor: '#f0f4f8', zeroline: false },
+                  yaxis: {
+                    title: { text: 'Rolling 3Y Return (% p.a.)' },
+                    showgrid: true,
+                    gridcolor: '#f0f4f8',
+                    ticksuffix: '%',
+                  },
+                  legend: { orientation: 'h', yanchor: 'bottom', y: -0.22, xanchor: 'center', x: 0.5 },
+                  hovermode: 'x unified',
+                }}
+                config={{ displayModeBar: false, responsive: true }}
+                style={{ width: '100%', height: '340px' }}
+              />
+            ) : (
+              <div className="empty-chart" style={{ height: 240 }}>
+                Rolling 3Y series will appear once at least 3 years of daily history is available.
+              </div>
+            )}
           </div>
         </>
       )}

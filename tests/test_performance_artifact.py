@@ -32,6 +32,20 @@ def test_write_portfolio_performance_outputs_expected_shape(tmp_path) -> None:
             "investment_returns": 10000.0,
             "current_value": 120000.0,
         },
+        valuation_series={
+            "dates": ["2026-01-01", "2026-01-02", "2026-01-03"],
+            "values": [100000.0, 110000.0, 120000.0],
+        },
+        cumulative_return_series={
+            "dates": ["2026-01-02", "2026-01-03"],
+            "portfolio": [1.0, 2.01],
+            "benchmark": [0.8, 1.61],
+        },
+        rolling_3y_return_series={
+            "dates": ["2026-01-03"],
+            "portfolio_3y_pa": [7.2],
+            "benchmark_3y_pa": [6.5],
+        },
     )
 
     payload = json.loads(out_path.read_text(encoding="utf-8"))
@@ -41,6 +55,9 @@ def test_write_portfolio_performance_outputs_expected_shape(tmp_path) -> None:
     assert payload["as_of_date"] == "2026-01-03"
     assert payload["current_value"] == 120000.0
     assert payload["capital_sources"]["rollover_capital"] == 100000.0
+    assert payload["valuation_series"]["values"][2] == 120000.0
+    assert payload["cumulative_return_series"]["portfolio"][1] == 2.01
+    assert payload["rolling_3y_return_series"]["benchmark_3y_pa"][0] == 6.5
     assert len(payload["periods"]) == 3
 
     three_y = next(r for r in payload["periods"] if r["period_code"] == "3Y")

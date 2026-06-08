@@ -85,6 +85,20 @@ export interface PerformanceArtifact {
     investment_returns: number;
     current_value: number;
   } | null;
+  valuation_series: {
+    dates: string[];
+    values: number[];
+  } | null;
+  cumulative_return_series: {
+    dates: string[];
+    portfolio: number[];
+    benchmark: number[];
+  } | null;
+  rolling_3y_return_series: {
+    dates: string[];
+    portfolio_3y_pa: number[];
+    benchmark_3y_pa: number[];
+  } | null;
   periods: PerformancePeriodRow[];
 }
 

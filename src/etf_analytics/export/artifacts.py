@@ -165,6 +165,9 @@ def write_portfolio_performance(
         metrics_df: pd.DataFrame,
     current_value: float | None = None,
     capital_sources: dict[str, float] | None = None,
+        valuation_series: dict | None = None,
+        cumulative_return_series: dict | None = None,
+        rolling_3y_return_series: dict | None = None,
 ) -> None:
         """Export portfolio performance metrics for UI consumption.
 
@@ -185,6 +188,9 @@ def write_portfolio_performance(
                 "as_of_date": as_of_date,
             "current_value": current_value,
             "capital_sources": capital_sources,
+                "valuation_series": valuation_series,
+                "cumulative_return_series": cumulative_return_series,
+                "rolling_3y_return_series": rolling_3y_return_series,
                 "periods": records,
         }
         _write_json(path, payload)

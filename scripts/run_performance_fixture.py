@@ -59,6 +59,9 @@ def main() -> None:
             metrics_df=metrics,
             current_value=metrics.attrs.get("current_value"),
             capital_sources=metrics.attrs.get("capital_sources"),
+            valuation_series=metrics.attrs.get("valuation_series"),
+            cumulative_return_series=metrics.attrs.get("cumulative_return_series"),
+            rolling_3y_return_series=metrics.attrs.get("rolling_3y_return_series"),
         )
         conn.commit()
 

@@ -94,6 +94,9 @@ def test_compute_and_store_performance_metrics_end_to_end(tmp_path) -> None:
 
         assert len(out) == 5
         assert out.attrs["as_of_date"] == dates[-1].date().isoformat()
+        assert len(out.attrs["valuation_series"]["dates"]) == n_days
+        assert len(out.attrs["cumulative_return_series"]["dates"]) == n_days - 1
+        assert isinstance(out.attrs["rolling_3y_return_series"]["dates"], list)
         si = out[out["period_code"] == "SI"].iloc[0]
         one_y = out[out["period_code"] == "1Y"].iloc[0]
         three_y = out[out["period_code"] == "3Y"].iloc[0]
