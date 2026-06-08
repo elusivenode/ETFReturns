@@ -11,8 +11,16 @@ import { Compare } from './pages/Compare';
 import { Backtest } from './pages/Backtest';
 import { Glossary } from './pages/Glossary';
 
+function defaultCompareStartDate(): string {
+  const d = new Date();
+  d.setFullYear(d.getFullYear() - 5);
+  return d.toISOString().slice(0, 10);
+}
+
 function AppInner() {
   const [page, setPage] = useState<Page>('dashboard');
+  const [compareSelected, setCompareSelected] = useState<string[]>([]);
+  const [compareStartDate, setCompareStartDate] = useState<string>(defaultCompareStartDate);
   const { metrics } = useArtifacts();
   const periodMetrics = usePeriodMetrics();
   const riskMetrics = useRiskMetrics();
@@ -26,7 +34,15 @@ function AppInner() {
         {page === 'analytics' && <Analytics periodMetrics={periodMetrics} riskMetrics={riskMetrics} />}
         {page === 'portfolio' && <PortfolioBuilder metrics={metrics} onNavigate={setPage} />}
         {page === 'insights'  && <Insights  metrics={metrics} onNavigate={setPage} />}
-        {page === 'compare'   && <Compare periodMetrics={periodMetrics} />}
+        {page === 'compare'   && (
+          <Compare
+            periodMetrics={periodMetrics}
+            selected={compareSelected}
+            startDate={compareStartDate}
+            onSelectedChange={setCompareSelected}
+            onStartDateChange={setCompareStartDate}
+          />
+        )}
         {page === 'backtest'  && <Backtest />}
         {page === 'glossary'  && <Glossary />}
       </main>

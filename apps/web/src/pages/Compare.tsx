@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import Plot from 'react-plotly.js';
 import { ASSET_CLASSES } from '../data/assetClasses';
 import { usePriceSeries, computeCumReturn } from '../hooks/usePriceSeries';
@@ -95,27 +95,28 @@ function computeCpiCumReturn(
   };
 }
 
-function defaultStartDate(): string {
-  const d = new Date();
-  d.setFullYear(d.getFullYear() - 5);
-  return d.toISOString().slice(0, 10);
-}
-
 interface Props {
   periodMetrics: PeriodMetricRow[];
+  selected: string[];
+  startDate: string;
+  onSelectedChange: (tickers: string[]) => void;
+  onStartDateChange: (startDate: string) => void;
 }
 
-export function Compare({ periodMetrics }: Props) {
+export function Compare({
+  periodMetrics,
+  selected,
+  startDate,
+  onSelectedChange,
+  onStartDateChange,
+}: Props) {
   const { series, loaded, error } = usePriceSeries();
   const cpiSeries = useCpiSeries();
 
-  const [selected, setSelected]   = useState<string[]>([]);
-  const [startDate, setStartDate] = useState(defaultStartDate);
-
   const toggle    = (ticker: string) =>
-    setSelected(s => s.includes(ticker) ? s.filter(t => t !== ticker) : [...s, ticker]);
-  const selectAll = () => setSelected(ALL_ETF_TICKERS.filter(t => series[t]));
-  const clearAll  = () => setSelected([]);
+    onSelectedChange(selected.includes(ticker) ? selected.filter(t => t !== ticker) : [...selected, ticker]);
+  const selectAll = () => onSelectedChange(ALL_ETF_TICKERS.filter(t => series[t]));
+  const clearAll  = () => onSelectedChange([]);
 
   const { traces, noDataTickers } = useMemo(() => {
     const traces: Plotly.Data[] = [];
@@ -180,7 +181,7 @@ export function Compare({ periodMetrics }: Props) {
             value={startDate}
             min={minDate}
             max={new Date().toISOString().slice(0, 10)}
-            onChange={e => setStartDate(e.target.value)}
+            onChange={e => onStartDateChange(e.target.value)}
             className="compare-date-input"
           />
           <div className="compare-bulk-actions">

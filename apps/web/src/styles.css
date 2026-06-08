@@ -414,6 +414,60 @@ button { cursor: pointer; font: inherit; }
 
 .analytics-sort-dir:hover { background: var(--slate-50); }
 
+.analytics-filter-card {
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.analytics-filter-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.analytics-filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.analytics-filter-label {
+  font-size: 0.8rem;
+  color: var(--slate-600);
+  font-weight: 600;
+}
+
+.analytics-filter-input {
+  font-size: 0.88rem;
+  padding: 8px 10px;
+  border: 1px solid var(--slate-200);
+  border-radius: 8px;
+  color: var(--slate-800);
+  background: #fff;
+}
+
+.analytics-filter-input:focus,
+.analytics-filter-multiselect:focus {
+  outline: 2px solid var(--green-100);
+  outline-offset: 1px;
+  border-color: var(--green-700);
+}
+
+.analytics-filter-multiselect {
+  font-size: 0.85rem;
+  padding: 8px;
+  border: 1px solid var(--slate-200);
+  border-radius: 8px;
+  color: var(--slate-800);
+  background: #fff;
+  min-height: 130px;
+}
+
+.analytics-filter-help {
+  font-size: 0.78rem;
+  color: var(--slate-400);
+}
+
 /* ── Explore ─────────────────────────────────────────────────────────────── */
 
 .asset-class-section { }
