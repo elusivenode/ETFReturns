@@ -7,7 +7,7 @@
       "allocations": [
         {
           "ticker": "IOZ.AX",
-          "weight": 15
+          "weight": 10
         },
         {
           "ticker": "IVV.AX",
@@ -43,7 +43,7 @@
         },
         {
           "ticker": "BGBL.AX",
-          "weight": 10
+          "weight": 15
         }
       ]
     },
@@ -53,5 +53,5 @@
       "allocations": []
     }
   ],
-  "saved_at": "2026-06-08T03:14:03.247Z"
+  "saved_at": "2026-06-08T03:14:57.242Z"
 }
