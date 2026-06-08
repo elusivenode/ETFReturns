@@ -163,6 +163,8 @@ def write_portfolio_performance(
         calculation_version: str,
         as_of_date: str,
         metrics_df: pd.DataFrame,
+    current_value: float | None = None,
+    capital_sources: dict[str, float] | None = None,
 ) -> None:
         """Export portfolio performance metrics for UI consumption.
 
@@ -181,6 +183,8 @@ def write_portfolio_performance(
                 "benchmark_code": benchmark_code,
                 "calculation_version": calculation_version,
                 "as_of_date": as_of_date,
+            "current_value": current_value,
+            "capital_sources": capital_sources,
                 "periods": records,
         }
         _write_json(path, payload)

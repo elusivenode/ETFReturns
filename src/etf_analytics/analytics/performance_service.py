@@ -5,7 +5,11 @@ import sqlite3
 import pandas as pd
 
 from etf_analytics.analytics.performance import TRADING_DAYS_PER_YEAR, annualize_return, linked_return
-from etf_analytics.analytics.performance import classify_flow_type, compute_daily_twr
+from etf_analytics.analytics.performance import (
+    classify_flow_type,
+    compute_daily_twr,
+    summarize_capital_sources,
+)
 from etf_analytics.storage.performance_repository import (
     load_benchmark_series,
     load_cash_flows,
@@ -152,6 +156,9 @@ def compute_and_store_performance_metrics(
     aligned = _aligned_daily_returns(daily_twr, benchmark)
     metrics = build_period_performance_metrics(aligned)
 
+    current_value = float(valuations.sort_values("valuation_date").iloc[-1]["net_assets"]) if not valuations.empty else None
+    capital_sources = summarize_capital_sources(current_value or 0.0, cash_flows)
+
     if as_of_date is None:
         if aligned.empty:
             as_of = pd.Timestamp.utcnow().date().isoformat()
@@ -171,6 +178,8 @@ def compute_and_store_performance_metrics(
     metrics.attrs["benchmark_code"] = benchmark_code
     metrics.attrs["calculation_version"] = calculation_version
     metrics.attrs["portfolio_id"] = portfolio_id
+    metrics.attrs["current_value"] = current_value
+    metrics.attrs["capital_sources"] = capital_sources
     return metrics
 
 

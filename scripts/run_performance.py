@@ -56,6 +56,8 @@ def main() -> None:
             calculation_version=args.calculation_version,
             as_of_date=str(metrics.attrs.get("as_of_date", args.as_of_date or "")),
             metrics_df=metrics,
+            current_value=metrics.attrs.get("current_value"),
+            capital_sources=metrics.attrs.get("capital_sources"),
         )
         conn.commit()
 

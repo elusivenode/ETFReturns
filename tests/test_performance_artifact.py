@@ -25,6 +25,13 @@ def test_write_portfolio_performance_outputs_expected_shape(tmp_path) -> None:
         calculation_version="v1",
         as_of_date="2026-01-03",
         metrics_df=metrics,
+        current_value=120000.0,
+        capital_sources={
+            "rollover_capital": 100000.0,
+            "contributions": 10000.0,
+            "investment_returns": 10000.0,
+            "current_value": 120000.0,
+        },
     )
 
     payload = json.loads(out_path.read_text(encoding="utf-8"))
@@ -32,6 +39,8 @@ def test_write_portfolio_performance_outputs_expected_shape(tmp_path) -> None:
     assert payload["benchmark_code"] == "CPI_PLUS_5_TOTAL"
     assert payload["calculation_version"] == "v1"
     assert payload["as_of_date"] == "2026-01-03"
+    assert payload["current_value"] == 120000.0
+    assert payload["capital_sources"]["rollover_capital"] == 100000.0
     assert len(payload["periods"]) == 3
 
     three_y = next(r for r in payload["periods"] if r["period_code"] == "3Y")
