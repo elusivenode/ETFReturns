@@ -1,5 +1,5 @@
 {
-  "cashYield": 4.5,
+  "cashYield": 4.6,
   "members": [
     {
       "name": "Hamish",
@@ -19,11 +19,11 @@
         },
         {
           "ticker": "QPON.AX",
-          "weight": 15
+          "weight": 20
         },
         {
           "ticker": "MXT.AX",
-          "weight": 15
+          "weight": 10
         },
         {
           "ticker": "CASH",
@@ -39,19 +39,52 @@
         },
         {
           "ticker": "GOLD.AX",
-          "weight": 5
+          "weight": 10
         },
         {
           "ticker": "BGBL.AX",
-          "weight": 15
+          "weight": 10
         }
       ]
     },
     {
       "name": "Becky",
       "balance": 425000,
-      "allocations": []
+      "allocations": [
+        {
+          "ticker": "IOZ.AX",
+          "weight": 10
+        },
+        {
+          "ticker": "IVV.AX",
+          "weight": 30
+        },
+        {
+          "ticker": "GROW.AX",
+          "weight": 15
+        },
+        {
+          "ticker": "QPON.AX",
+          "weight": 10
+        },
+        {
+          "ticker": "MXT.AX",
+          "weight": 10
+        },
+        {
+          "ticker": "GOLD.AX",
+          "weight": 10
+        },
+        {
+          "ticker": "CASH",
+          "weight": 5
+        },
+        {
+          "ticker": "VAP.AX",
+          "weight": 10
+        }
+      ]
     }
   ],
-  "saved_at": "2026-06-08T03:14:57.242Z"
+  "saved_at": "2026-06-08T10:26:35.331Z"
 }
