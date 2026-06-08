@@ -27,4 +27,5 @@ OVERRIDES_PATH = DATA_DIR / "price_overrides.csv"
 START_DATES_PATH = DATA_DIR / "ticker_start_dates.csv"
 CPI_ARTIFACT_PATH = ARTIFACT_DIR / "cpi_series.json"
 RISK_METRICS_PATH = ARTIFACT_DIR / "risk_metrics.json"
+PERFORMANCE_METRICS_ARTIFACT_PATH = ARTIFACT_DIR / "performance_metrics.json"
 RF_FALLBACK_RATE = 0.045  # used when RBA fetch fails; update here only

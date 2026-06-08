@@ -167,6 +167,10 @@ def compute_and_store_performance_metrics(
         metrics_df=metrics,
         calculation_version=calculation_version,
     )
+    metrics.attrs["as_of_date"] = as_of
+    metrics.attrs["benchmark_code"] = benchmark_code
+    metrics.attrs["calculation_version"] = calculation_version
+    metrics.attrs["portfolio_id"] = portfolio_id
     return metrics
 
 

@@ -93,6 +93,7 @@ def test_compute_and_store_performance_metrics_end_to_end(tmp_path) -> None:
         conn.commit()
 
         assert len(out) == 5
+        assert out.attrs["as_of_date"] == dates[-1].date().isoformat()
         si = out[out["period_code"] == "SI"].iloc[0]
         one_y = out[out["period_code"] == "1Y"].iloc[0]
         three_y = out[out["period_code"] == "3Y"].iloc[0]
@@ -108,7 +109,7 @@ def test_compute_and_store_performance_metrics_end_to_end(tmp_path) -> None:
         persisted = load_performance_metrics(
             conn,
             portfolio_id="smsf_main",
-            as_of_date=out.iloc[0].get("as_of_date", dates[-1].date().isoformat()),
+            as_of_date=out.attrs["as_of_date"],
             calculation_version="v1",
         )
         # Loader sort order by period_code alphabetical; still must include all periods

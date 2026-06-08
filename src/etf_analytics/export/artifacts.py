@@ -153,3 +153,34 @@ def write_price_series(path: Path, price_df: pd.DataFrame) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8") as f:
         json.dump(result, f, separators=(",", ":"))
+
+
+def write_portfolio_performance(
+        path: Path,
+        *,
+        portfolio_id: str,
+        benchmark_code: str,
+        calculation_version: str,
+        as_of_date: str,
+        metrics_df: pd.DataFrame,
+) -> None:
+        """Export portfolio performance metrics for UI consumption.
+
+        Output format:
+            {
+                "portfolio_id": "...",
+                "benchmark_code": "...",
+                "calculation_version": "...",
+                "as_of_date": "YYYY-MM-DD",
+                "periods": [{...}, ...]
+            }
+        """
+        records = [_sanitize_record(row) for row in metrics_df.to_dict(orient="records")]
+        payload = {
+                "portfolio_id": portfolio_id,
+                "benchmark_code": benchmark_code,
+                "calculation_version": calculation_version,
+                "as_of_date": as_of_date,
+                "periods": records,
+        }
+        _write_json(path, payload)
