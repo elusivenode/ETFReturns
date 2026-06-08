@@ -10,6 +10,7 @@ import { Insights } from './pages/Insights';
 import { Compare } from './pages/Compare';
 import { Backtest } from './pages/Backtest';
 import { Glossary } from './pages/Glossary';
+import { Performance } from './pages/Performance';
 
 function defaultCompareStartDate(): string {
   const d = new Date();
@@ -32,6 +33,7 @@ function AppInner() {
         {page === 'dashboard' && <Dashboard metrics={metrics} periodMetrics={periodMetrics} onNavigate={setPage} />}
         {page === 'explore'   && <Explore   metrics={metrics} onNavigate={setPage} />}
         {page === 'analytics' && <Analytics periodMetrics={periodMetrics} riskMetrics={riskMetrics} />}
+        {page === 'performance' && <Performance />}
         {page === 'portfolio' && <PortfolioBuilder metrics={metrics} onNavigate={setPage} />}
         {page === 'insights'  && <Insights  metrics={metrics} onNavigate={setPage} />}
         {page === 'compare'   && (

@@ -414,6 +414,38 @@ button { cursor: pointer; font: inherit; }
 
 .analytics-sort-dir:hover { background: var(--slate-50); }
 
+/* ── Performance ─────────────────────────────────────────────────────────── */
+
+.performance-kpi-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.performance-kpi-card h3 {
+  margin-bottom: 10px;
+}
+
+.performance-kpi-value {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--green-700);
+}
+
+.performance-sources-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--slate-100);
+}
+
+.performance-sources-row:last-child {
+  border-bottom: none;
+}
+
 .analytics-filter-card {
   padding-top: 16px;
   padding-bottom: 16px;

@@ -63,6 +63,45 @@ export interface CpiSeries {
   rolling_3y: CpiDateValues;
 }
 
+export interface PerformancePeriodRow {
+  period_code: 'SI' | '1Y' | '3Y' | '5Y' | '10Y';
+  twr_annualized: number | null;
+  mwr_annualized: number | null;
+  benchmark_annualized: number | null;
+  excess_annualized: number | null;
+  volatility_annualized: number | null;
+  max_drawdown: number | null;
+}
+
+export interface PerformanceArtifact {
+  portfolio_id: string;
+  benchmark_code: string;
+  calculation_version: string;
+  as_of_date: string;
+  current_value: number | null;
+  capital_sources: {
+    rollover_capital: number;
+    contributions: number;
+    investment_returns: number;
+    current_value: number;
+  } | null;
+  valuation_series: {
+    dates: string[];
+    values: number[];
+  } | null;
+  cumulative_return_series: {
+    dates: string[];
+    portfolio: number[];
+    benchmark: number[];
+  } | null;
+  rolling_3y_return_series: {
+    dates: string[];
+    portfolio_3y_pa: number[];
+    benchmark_3y_pa: number[];
+  } | null;
+  periods: PerformancePeriodRow[];
+}
+
 export function useCpiSeries(): CpiSeries | null {
   const [data, setData] = useState<CpiSeries | null>(null);
   useEffect(() => {
@@ -73,5 +112,20 @@ export function useCpiSeries(): CpiSeries | null {
       })
       .catch(() => {});
   }, []);
+  return data;
+}
+
+export function usePerformanceArtifact(): PerformanceArtifact | null {
+  const [data, setData] = useState<PerformanceArtifact | null>(null);
+
+  useEffect(() => {
+    fetch(`${import.meta.env.BASE_URL}data/performance_metrics.json`)
+      .then(r => r.ok ? r.json() : null)
+      .then((d: PerformanceArtifact | null) => {
+        if (d?.periods?.length) setData(d);
+      })
+      .catch(() => {});
+  }, []);
+
   return data;
 }

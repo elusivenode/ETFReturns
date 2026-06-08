@@ -26,6 +26,30 @@ jobs:
       - name: Refresh cache and generate artifacts
         run: python scripts/run_refresh.py
 
+      - name: Generate performance artifact (if performance portfolio exists)
+        run: |
+          PORTFOLIO_ID=$(python - <<'PY'
+          import sqlite3
+
+          conn = sqlite3.connect('data/sqlite/etf_cache.db')
+          try:
+              row = conn.execute('SELECT id FROM portfolio ORDER BY id LIMIT 1').fetchone()
+              print(row[0] if row else '')
+          finally:
+              conn.close()
+          PY
+          )
+
+          if [ -n "$PORTFOLIO_ID" ]; then
+            echo "Generating performance artifact for portfolio: $PORTFOLIO_ID"
+            python scripts/run_performance.py \
+              --portfolio-id "$PORTFOLIO_ID" \
+              --benchmark-code CPI_PLUS_5_TOTAL \
+              --calculation-version refresh-data
+          else
+            echo "No performance portfolio found in SQLite; skipping performance artifact generation."
+          fi
+
       - name: Commit updated artifacts
         run: |
           git config user.name "github-actions[bot]"

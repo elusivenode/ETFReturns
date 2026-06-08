@@ -153,3 +153,44 @@ def write_price_series(path: Path, price_df: pd.DataFrame) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8") as f:
         json.dump(result, f, separators=(",", ":"))
+
+
+def write_portfolio_performance(
+        path: Path,
+        *,
+        portfolio_id: str,
+        benchmark_code: str,
+        calculation_version: str,
+        as_of_date: str,
+        metrics_df: pd.DataFrame,
+    current_value: float | None = None,
+    capital_sources: dict[str, float] | None = None,
+        valuation_series: dict | None = None,
+        cumulative_return_series: dict | None = None,
+        rolling_3y_return_series: dict | None = None,
+) -> None:
+        """Export portfolio performance metrics for UI consumption.
+
+        Output format:
+            {
+                "portfolio_id": "...",
+                "benchmark_code": "...",
+                "calculation_version": "...",
+                "as_of_date": "YYYY-MM-DD",
+                "periods": [{...}, ...]
+            }
+        """
+        records = [_sanitize_record(row) for row in metrics_df.to_dict(orient="records")]
+        payload = {
+                "portfolio_id": portfolio_id,
+                "benchmark_code": benchmark_code,
+                "calculation_version": calculation_version,
+                "as_of_date": as_of_date,
+            "current_value": current_value,
+            "capital_sources": capital_sources,
+                "valuation_series": valuation_series,
+                "cumulative_return_series": cumulative_return_series,
+                "rolling_3y_return_series": rolling_3y_return_series,
+                "periods": records,
+        }
+        _write_json(path, payload)

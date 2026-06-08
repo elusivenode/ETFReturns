@@ -1,9 +1,10 @@
-export type Page = 'dashboard' | 'explore' | 'analytics' | 'portfolio' | 'insights' | 'compare' | 'backtest' | 'glossary';
+export type Page = 'dashboard' | 'explore' | 'analytics' | 'performance' | 'portfolio' | 'insights' | 'compare' | 'backtest' | 'glossary';
 
 const LINKS: { page: Page; label: string }[] = [
   { page: 'dashboard', label: 'Dashboard' },
   { page: 'explore',   label: 'Explore' },
   { page: 'analytics', label: 'Analytics' },
+  { page: 'performance', label: 'Performance' },
   { page: 'portfolio', label: 'Portfolio' },
   { page: 'insights',  label: 'Insights' },
   { page: 'compare',   label: 'Compare' },
