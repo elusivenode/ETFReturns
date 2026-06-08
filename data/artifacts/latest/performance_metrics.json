@@ -1,0 +1,91 @@
+{
+  "portfolio_id": "fixture_smsf",
+  "benchmark_code": "CPI_PLUS_5_TOTAL",
+  "calculation_version": "v1",
+  "as_of_date": "2026-01-03",
+  "current_value": 112009.0,
+  "capital_sources": {
+    "rollover_capital": 0.0,
+    "contributions": 10000.0,
+    "investment_returns": 102009.0,
+    "current_value": 112009.0
+  },
+  "valuation_series": {
+    "dates": [
+      "2026-01-01",
+      "2026-01-02",
+      "2026-01-03"
+    ],
+    "values": [
+      100000.0,
+      110900.0,
+      112009.0
+    ]
+  },
+  "cumulative_return_series": {
+    "dates": [
+      "2026-01-02",
+      "2026-01-03"
+    ],
+    "portfolio": [
+      0.8999999999999897,
+      1.908999999999983
+    ],
+    "benchmark": [
+      0.07999999999999119,
+      0.1600639999999931
+    ]
+  },
+  "rolling_3y_return_series": {
+    "dates": [],
+    "portfolio_3y_pa": [],
+    "benchmark_3y_pa": []
+  },
+  "periods": [
+    {
+      "period_code": "SI",
+      "twr_annualized": 9.833780755307,
+      "mwr_annualized": null,
+      "benchmark_annualized": 0.22325997172400847,
+      "excess_annualized": 9.610520783582992,
+      "volatility_annualized": null,
+      "max_drawdown": null
+    },
+    {
+      "period_code": "1Y",
+      "twr_annualized": null,
+      "mwr_annualized": null,
+      "benchmark_annualized": null,
+      "excess_annualized": null,
+      "volatility_annualized": null,
+      "max_drawdown": null
+    },
+    {
+      "period_code": "3Y",
+      "twr_annualized": null,
+      "mwr_annualized": null,
+      "benchmark_annualized": null,
+      "excess_annualized": null,
+      "volatility_annualized": null,
+      "max_drawdown": null
+    },
+    {
+      "period_code": "5Y",
+      "twr_annualized": null,
+      "mwr_annualized": null,
+      "benchmark_annualized": null,
+      "excess_annualized": null,
+      "volatility_annualized": null,
+      "max_drawdown": null
+    },
+    {
+      "period_code": "10Y",
+      "twr_annualized": null,
+      "mwr_annualized": null,
+      "benchmark_annualized": null,
+      "excess_annualized": null,
+      "volatility_annualized": null,
+      "max_drawdown": null
+    }
+  ]
+}

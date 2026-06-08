@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generated_at": "2026-06-08T02:50:05Z",
+    "generated_at": "2026-06-08T04:12:01Z",
     "rf_source": "RBA Cash Rate Target (F1.1)",
     "annualisation_factor": 252,
     "sharpe_formula": "mean(excess_daily) / std(excess_daily, ddof=1) * sqrt(252)",
