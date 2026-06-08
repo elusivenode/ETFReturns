@@ -419,6 +419,12 @@ button { cursor: pointer; font: inherit; }
   padding-bottom: 16px;
 }
 
+.analytics-filter-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
 .analytics-filter-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;

@@ -87,6 +87,13 @@ export function Analytics({ periodMetrics, riskMetrics }: Props) {
     setSelectedSet(values);
   };
 
+  const clearFilters = () => {
+    setTickerFilter('');
+    setSelectedSet([]);
+  };
+
+  const hasActiveFilter = tickerFilter.trim().length > 0 || selectedSet.length > 0;
+
   const rfSource = riskMetrics[0]?.rf_source ?? 'RBA Cash Rate Target (F1.1)';
   const sortDir = ascending ? '↑ lowest first' : '↓ highest first';
 
@@ -100,6 +107,15 @@ export function Analytics({ periodMetrics, riskMetrics }: Props) {
       </div>
 
       <div className="card analytics-filter-card">
+        <div className="analytics-filter-actions">
+          <button
+            className="btn btn-secondary"
+            onClick={clearFilters}
+            disabled={!hasActiveFilter}
+          >
+            Clear filters
+          </button>
+        </div>
         <div className="analytics-filter-grid">
           <div className="analytics-filter-field">
             <label htmlFor="analytics-ticker-filter" className="analytics-filter-label">Single ETF ticker</label>
