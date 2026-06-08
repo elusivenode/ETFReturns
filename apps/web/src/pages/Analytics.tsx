@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, type ChangeEvent } from 'react';
 import { findPeriodMetric } from '../hooks/useArtifacts';
 import { PerfTable, fmtPeriodPct, fmtSharpe } from '../components/PerfTables';
 import { RiskTable } from '../components/RiskTable';
@@ -25,14 +25,37 @@ interface Props {
 export function Analytics({ periodMetrics, riskMetrics }: Props) {
   const [sortField, setSortField] = useState<SortField>('ret_3y');
   const [ascending, setAscending] = useState(true);
+  const [tickerFilter, setTickerFilter] = useState('');
+  const [selectedSet, setSelectedSet] = useState<string[]>([]);
 
   const allPeriodTickers = useMemo(
     () => periodMetrics.map(r => r.ticker),
     [periodMetrics],
   );
 
+  const allTickers = useMemo(() => {
+    const merged = new Set<string>([
+      ...periodMetrics.map(r => r.ticker),
+      ...riskMetrics.map(r => r.ticker),
+    ]);
+    return [...merged].sort();
+  }, [periodMetrics, riskMetrics]);
+
+  const effectiveFilter = useMemo(() => {
+    const normalizedInput = tickerFilter.trim().toUpperCase().replace(/\.AX$/, '');
+    if (normalizedInput) {
+      const matched = allTickers.find(t => t.toUpperCase().replace(/\.AX$/, '') === normalizedInput);
+      return matched ? [matched] : [];
+    }
+    return selectedSet;
+  }, [tickerFilter, selectedSet, allTickers]);
+
   const tickersSorted = useMemo(() => {
-    return [...allPeriodTickers].sort((a, b) => {
+    const baseTickers = effectiveFilter.length > 0
+      ? allPeriodTickers.filter(t => effectiveFilter.includes(t))
+      : allPeriodTickers;
+
+    return [...baseTickers].sort((a, b) => {
       const va = (findPeriodMetric(periodMetrics, a)?.[sortField] as number | null) ?? null;
       const vb = (findPeriodMetric(periodMetrics, b)?.[sortField] as number | null) ?? null;
       if (va === null && vb === null) return 0;
@@ -40,10 +63,14 @@ export function Analytics({ periodMetrics, riskMetrics }: Props) {
       if (vb === null) return -1;
       return ascending ? va - vb : vb - va;
     });
-  }, [allPeriodTickers, periodMetrics, sortField, ascending]);
+  }, [allPeriodTickers, effectiveFilter, periodMetrics, sortField, ascending]);
 
   const tickersByRisk = useMemo(() => {
-    return [...riskMetrics]
+    const filteredRisk = effectiveFilter.length > 0
+      ? riskMetrics.filter(r => effectiveFilter.includes(r.ticker))
+      : riskMetrics;
+
+    return [...filteredRisk]
       .sort((a, b) => {
         const sa = a.sharpe_annualised ?? null;
         const sb = b.sharpe_annualised ?? null;
@@ -53,7 +80,12 @@ export function Analytics({ periodMetrics, riskMetrics }: Props) {
         return sb - sa;
       })
       .map(r => r.ticker);
-  }, [riskMetrics]);
+  }, [riskMetrics, effectiveFilter]);
+
+  const onSetChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const values = Array.from(e.target.selectedOptions).map(o => o.value);
+    setSelectedSet(values);
+  };
 
   const rfSource = riskMetrics[0]?.rf_source ?? 'RBA Cash Rate Target (F1.1)';
   const sortDir = ascending ? '↑ lowest first' : '↓ highest first';
@@ -65,6 +97,39 @@ export function Analytics({ periodMetrics, riskMetrics }: Props) {
         <p className="page-subtitle">
           Compare all ETFs across period performance and risk-adjusted return metrics.
         </p>
+      </div>
+
+      <div className="card analytics-filter-card">
+        <div className="analytics-filter-grid">
+          <div className="analytics-filter-field">
+            <label htmlFor="analytics-ticker-filter" className="analytics-filter-label">Single ETF ticker</label>
+            <input
+              id="analytics-ticker-filter"
+              type="text"
+              className="analytics-filter-input"
+              value={tickerFilter}
+              onChange={e => setTickerFilter(e.target.value)}
+              placeholder="e.g. VGS or VGS.AX"
+            />
+            <p className="analytics-filter-help">When set, this overrides the ETF set selection below.</p>
+          </div>
+
+          <div className="analytics-filter-field">
+            <label htmlFor="analytics-set-filter" className="analytics-filter-label">ETF set</label>
+            <select
+              id="analytics-set-filter"
+              multiple
+              className="analytics-filter-multiselect"
+              value={selectedSet}
+              onChange={onSetChange}
+            >
+              {allTickers.map(ticker => (
+                <option key={ticker} value={ticker}>{ticker.replace('.AX', '')}</option>
+              ))}
+            </select>
+            <p className="analytics-filter-help">Select multiple ETFs (Cmd/Ctrl-click). Used when the single ticker box is empty.</p>
+          </div>
+        </div>
       </div>
 
       {/* ── Period Performance ─────────────────────────────────────────────── */}
@@ -119,6 +184,12 @@ export function Analytics({ periodMetrics, riskMetrics }: Props) {
         fmt={fmtSharpe}
         colored
       />
+
+      {tickersSorted.length === 0 && tickersByRisk.length === 0 && (
+        <div className="card">
+          <p className="page-subtitle">No ETFs match the current filter. Try a different ticker or clear the filter.</p>
+        </div>
+      )}
 
       {/* ── Risk-Adjusted Returns ──────────────────────────────────────────── */}
       <div className="analytics-section-header" style={{ marginTop: '2rem' }}>
