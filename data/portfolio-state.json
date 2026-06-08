@@ -11,11 +11,11 @@
         },
         {
           "ticker": "IVV.AX",
-          "weight": 15
+          "weight": 10
         },
         {
           "ticker": "GROW.AX",
-          "weight": 20
+          "weight": 15
         },
         {
           "ticker": "QPON.AX",
@@ -40,6 +40,10 @@
         {
           "ticker": "GOLD.AX",
           "weight": 5
+        },
+        {
+          "ticker": "BGBL.AX",
+          "weight": 10
         }
       ]
     },
@@ -49,5 +53,5 @@
       "allocations": []
     }
   ],
-  "saved_at": "2026-06-05T01:08:33.629Z"
+  "saved_at": "2026-06-08T03:14:03.247Z"
 }
