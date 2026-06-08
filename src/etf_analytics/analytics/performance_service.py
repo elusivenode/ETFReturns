@@ -5,10 +5,12 @@ from typing import Any
 
 import pandas as pd
 
-from etf_analytics.analytics.performance import TRADING_DAYS_PER_YEAR, annualize_return, linked_return
 from etf_analytics.analytics.performance import (
+    TRADING_DAYS_PER_YEAR,
+    annualize_return,
     classify_flow_type,
     compute_daily_twr,
+    linked_return,
     rolling_linked_returns,
     summarize_capital_sources,
 )
@@ -95,13 +97,23 @@ def _build_output_series(
             "benchmark": [float(v * 100.0) for v in benchmark_cum],
         }
 
-        p_roll_total = rolling_linked_returns(aligned_returns["portfolio_return"], ROLLING_3Y_WINDOW)
-        b_roll_total = rolling_linked_returns(aligned_returns["benchmark_return"], ROLLING_3Y_WINDOW)
+        p_roll_total = rolling_linked_returns(
+            aligned_returns["portfolio_return"],
+            ROLLING_3Y_WINDOW,
+        )
+        b_roll_total = rolling_linked_returns(
+            aligned_returns["benchmark_return"],
+            ROLLING_3Y_WINDOW,
+        )
 
         if not p_roll_total.empty and not b_roll_total.empty:
             shared_idx = p_roll_total.index.intersection(b_roll_total.index)
-            p_roll_ann = p_roll_total.loc[shared_idx].map(lambda r: annualize_return(float(r), 3.0) * 100.0)
-            b_roll_ann = b_roll_total.loc[shared_idx].map(lambda r: annualize_return(float(r), 3.0) * 100.0)
+            p_roll_ann = p_roll_total.loc[shared_idx].map(
+                lambda r: annualize_return(float(r), 3.0) * 100.0
+            )
+            b_roll_ann = b_roll_total.loc[shared_idx].map(
+                lambda r: annualize_return(float(r), 3.0) * 100.0
+            )
             rolling_3y_return_series = {
                 "dates": [d.strftime("%Y-%m-%d") for d in shared_idx],
                 "portfolio_3y_pa": [float(v) for v in p_roll_ann],
@@ -219,7 +231,11 @@ def compute_and_store_performance_metrics(
     aligned = _aligned_daily_returns(daily_twr, benchmark)
     metrics = build_period_performance_metrics(aligned)
 
-    current_value = float(valuations.sort_values("valuation_date").iloc[-1]["net_assets"]) if not valuations.empty else None
+    current_value = (
+        float(valuations.sort_values("valuation_date").iloc[-1]["net_assets"])
+        if not valuations.empty
+        else None
+    )
     capital_sources = summarize_capital_sources(current_value or 0.0, cash_flows)
 
     if as_of_date is None:

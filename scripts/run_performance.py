@@ -13,7 +13,11 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Run portfolio performance pipeline and persist period metrics."
     )
-    parser.add_argument("--portfolio-id", required=True, help="Portfolio id in SQLite performance tables")
+    parser.add_argument(
+        "--portfolio-id",
+        required=True,
+        help="Portfolio id in SQLite performance tables",
+    )
     parser.add_argument(
         "--benchmark-code",
         default="CPI_PLUS_5_TOTAL",

@@ -211,9 +211,17 @@ def upsert_performance_metrics(
                 str(row["period_code"]),
                 float(row["twr_annualized"]) if pd.notna(row.get("twr_annualized")) else None,
                 float(row["mwr_annualized"]) if pd.notna(row.get("mwr_annualized")) else None,
-                float(row["benchmark_annualized"]) if pd.notna(row.get("benchmark_annualized")) else None,
+                (
+                    float(row["benchmark_annualized"])
+                    if pd.notna(row.get("benchmark_annualized"))
+                    else None
+                ),
                 float(row["excess_annualized"]) if pd.notna(row.get("excess_annualized")) else None,
-                float(row["volatility_annualized"]) if pd.notna(row.get("volatility_annualized")) else None,
+                (
+                    float(row["volatility_annualized"])
+                    if pd.notna(row.get("volatility_annualized"))
+                    else None
+                ),
                 float(row["max_drawdown"]) if pd.notna(row.get("max_drawdown")) else None,
                 calculation_version,
                 _utc_now_iso(),
