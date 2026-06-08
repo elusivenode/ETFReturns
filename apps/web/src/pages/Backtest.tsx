@@ -8,6 +8,7 @@ import type { MemberPortfolio, PriceSeriesArtifact } from '../types/contracts';
 const TRADING_DAYS_PER_YEAR = 252;
 const ROLLING_YEARS = 3;
 const ROLLING_WINDOW = TRADING_DAYS_PER_YEAR * ROLLING_YEARS;
+const CPI_PREMIUM = 0.05;
 
 type RollingPoint = {
   date: string;
@@ -287,13 +288,13 @@ export function Backtest() {
 
   const cpiTrace: Plotly.Data | null = cpiSeries
     ? {
-        name: 'CPI (3Y p.a.)',
+        name: 'CPI + 5% (3Y p.a.)',
         x: cpiSeries.rolling_3y.dates,
-        y: cpiSeries.rolling_3y.values.map(v => v * 100),
+        y: cpiSeries.rolling_3y.values.map(v => (v + CPI_PREMIUM) * 100),
         type: 'scatter',
         mode: 'lines',
         line: { width: 1.5, dash: 'dot', color: '#9b59b6' },
-        hovertemplate: 'CPI 3Y p.a.: %{y:.2f}%<extra></extra>',
+        hovertemplate: 'CPI + 5% 3Y p.a.: %{y:.2f}%<extra></extra>',
       }
     : null;
 
