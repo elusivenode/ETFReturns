@@ -5,7 +5,7 @@ import sqlite3
 import pandas as pd
 
 from etf_analytics.analytics.performance import TRADING_DAYS_PER_YEAR, annualize_return, linked_return
-from etf_analytics.analytics.performance import compute_daily_twr
+from etf_analytics.analytics.performance import classify_flow_type, compute_daily_twr
 from etf_analytics.storage.performance_repository import (
     load_benchmark_series,
     load_cash_flows,
@@ -46,6 +46,55 @@ def _annualized_from_window(returns: pd.Series, years: float) -> float | None:
         return None
     total = linked_return(returns)
     return annualize_return(total, years)
+
+
+def data_quality_warnings(
+    valuations: pd.DataFrame,
+    cash_flows: pd.DataFrame,
+    benchmark_df: pd.DataFrame,
+) -> list[str]:
+    warnings: list[str] = []
+
+    if valuations.empty:
+        warnings.append("No valuation rows found for portfolio.")
+        return warnings
+
+    v = valuations.copy()
+    v["valuation_date"] = pd.to_datetime(v["valuation_date"])
+
+    duplicate_dates = v["valuation_date"].duplicated().sum()
+    if duplicate_dates > 0:
+        warnings.append(f"Found {duplicate_dates} duplicate valuation dates.")
+
+    unique_dates = pd.DatetimeIndex(v["valuation_date"].drop_duplicates().sort_values())
+    if len(unique_dates) > 1:
+        expected = pd.bdate_range(unique_dates.min(), unique_dates.max())
+        missing = expected.difference(unique_dates)
+        if len(missing) > 0:
+            warnings.append(f"Missing {len(missing)} business-day valuations in date range.")
+
+    if not cash_flows.empty:
+        unknown_types = {
+            str(ft)
+            for ft in cash_flows["flow_type"].astype(str).tolist()
+            if _is_unknown_flow_type(ft)
+        }
+        if unknown_types:
+            names = ", ".join(sorted(unknown_types))
+            warnings.append(f"Unknown flow types found: {names}.")
+
+    if benchmark_df.empty:
+        warnings.append("No benchmark rows found for selected benchmark code.")
+
+    return warnings
+
+
+def _is_unknown_flow_type(flow_type: str) -> bool:
+    try:
+        classify_flow_type(flow_type)
+        return False
+    except ValueError:
+        return True
 
 
 def build_period_performance_metrics(aligned_returns: pd.DataFrame) -> pd.DataFrame:
@@ -119,3 +168,26 @@ def compute_and_store_performance_metrics(
         calculation_version=calculation_version,
     )
     return metrics
+
+
+def run_performance_pipeline(
+    conn: sqlite3.Connection,
+    *,
+    portfolio_id: str,
+    benchmark_code: str,
+    calculation_version: str,
+    as_of_date: str | None = None,
+) -> tuple[pd.DataFrame, list[str]]:
+    valuations = load_portfolio_valuations(conn, portfolio_id)
+    cash_flows = load_cash_flows(conn, portfolio_id)
+    benchmark = load_benchmark_series(conn, benchmark_code)
+
+    warnings = data_quality_warnings(valuations, cash_flows, benchmark)
+    metrics = compute_and_store_performance_metrics(
+        conn,
+        portfolio_id=portfolio_id,
+        benchmark_code=benchmark_code,
+        calculation_version=calculation_version,
+        as_of_date=as_of_date,
+    )
+    return metrics, warnings
